@@ -1,13 +1,13 @@
 # Portfolio
 
-Personal portfolio for Raphaela Oliveira, built with React + Vite. The visual identity is inspired by competitive FPS games, game HUD details, and a black, yellow, and purple palette.
+Personal portfolio for Raphaela Oliveira, built with React + Vite. The visual identity is clean and minimal: a light, single-page layout with Inter Tight + JetBrains Mono typography, thin dividers instead of cards, and one blue accent.
 
 ## Stack
 
 - Frontend: React, Vite, modern CSS, and lucide-react
 - Professional focus: advanced backend experience with intermediate frontend growth, product-minded engineering, APIs, testing, and observability
 - Core technologies: Java, Kotlin, React, SQL, Databricks, AWS, Terraform, Postman, Insomnia, CloudWatch, Datadog
-- Visual identity: personal photo, FPS/HUD details, career build meters, and visual industry cues for aerospace and banking
+- Visual identity: personal photo, editorial typography, numbered sections (work, experience, toolkit, recognition, about), and a large email call to action
 - Credentials highlighted: Cisco Introduction to IoT, AWS Serverless, AWS Academy Cloud Foundation, 42 Sao Paulo Ethical Web Hacking, and Certiprof Lifelong Learning
 - Optional backend: Java + Spring Boot, prepared in `backend/`
 
