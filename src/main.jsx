@@ -1,520 +1,222 @@
 import React, { useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import {
-  ArrowUpRight,
-  BadgeCheck,
-  Braces,
-  Cloud,
-  Code2,
-  Crosshair,
-  Database,
-  FlaskConical,
-  Gamepad2,
-  Landmark,
-  Layers3,
-  Linkedin,
-  Mail,
-  Rocket,
-  Server,
-  ShieldCheck,
-  Terminal,
-  Trophy,
-  Zap,
-} from 'lucide-react'
+import { ArrowDownRight, ArrowUpRight, BookOpen, Crosshair, Linkedin, Map, Rocket } from 'lucide-react'
 import './styles.css'
 
-const stats = [
-  { label: 'Current focus', value: 'Frontend growth' },
-  { label: 'Strongest base', value: 'Backend systems' },
+const EMAIL = 'raphaelaoliveira79@gmail.com'
+const LINKEDIN = 'https://www.linkedin.com/in/raphaelaoliveirajava'
+
+const navLinks = [
+  { id: 'work', label: 'Work' },
+  { id: 'experience', label: 'Experience' },
+  { id: 'skills', label: 'Skills' },
+  { id: 'more', label: 'About' },
+]
+
+const facts = [
+  { label: 'Now', value: 'Blue Origin' },
+  { label: 'Before', value: 'Itaú Unibanco' },
+  { label: 'Strongest at', value: 'Java · Kotlin · APIs' },
+  { label: 'Languages', value: 'EN · PT' },
+]
+
+const work = [
   {
-    label: 'Languages',
-    value: (
-      <>
-        <span className="flag flagBr" aria-label="Brazil" /> PT native ·{' '}
-        <span className="flag flagUs" aria-label="United States" /> EN intermediate
-      </>
-    ),
+    title: 'Supplier Data API',
+    company: 'Blue Origin · Aerospace',
+    text: 'Built and maintained a supplier data API integrated with Databricks, centralizing procurement visibility for aerospace supply-chain systems.',
+    stack: 'Java · Databricks',
   },
   {
-    label: 'Location',
-    value: (
-      <>
-        <span className="flag flagUs" aria-label="United States" /> Florida, USA
-      </>
-    ),
+    title: 'Approved Components Catalog',
+    company: 'Blue Origin · Aerospace',
+    text: 'Designed a centralized catalog of approved aerospace components, supporting reuse, reducing redundancy and improving technical decisions.',
+    stack: 'React · Java · Supply chain',
+  },
+  {
+    title: 'Banking Platforms',
+    company: 'Itaú Unibanco · Banking',
+    text: 'Financing, insurance quotation and access management platforms for banking channels serving high-volume user bases.',
+    stack: 'Java · REST APIs',
+  },
+]
+
+const experience = [
+  {
+    period: '2025 — Now',
+    company: 'Blue Origin',
+    role: 'Software Engineer',
+    text: 'Working more on frontend and product interfaces, bringing advanced backend context from APIs, data and platform systems.',
+  },
+  {
+    period: '2020 — 2025',
+    company: 'Itaú Unibanco',
+    role: 'Software Engineer',
+    text: 'Built a strong backend foundation through APIs, automation and banking features — from requirements to delivery and production support.',
+  },
+  {
+    period: '2019 — 2022',
+    company: 'University',
+    role: 'B.S. Computer Science',
+    text: 'Plus additional studies in English and an ongoing Theology degree.',
   },
 ]
 
 const skills = [
-  { icon: Server, title: 'Backend', level: 5, items: ['Java', 'Kotlin', 'REST APIs'] },
-  { icon: Layers3, title: 'Frontend', level: 3, items: ['React', 'Vite', 'Product UI'] },
-  { icon: Database, title: 'Data', level: 3, items: ['SQL', 'Databricks', 'Data visibility'] },
-  { icon: FlaskConical, title: 'Testing', level: 4, items: ['Postman', 'Insomnia', 'API validation'] },
-  { icon: Cloud, title: 'Observability', level: 3, items: ['CloudWatch', 'Datadog', 'Monitoring'] },
-  { icon: ShieldCheck, title: 'Delivery', level: 4, items: ['Automated tests', 'CI/CD', 'Production support'] },
-]
-
-const courses = [
-  {
-    order: 2,
-    provider: 'Cisco',
-    title: 'Introduction to IoT',
-    date: 'May 2021',
-    skills: ['IoT', 'Sensors', 'Connected systems'],
-  },
-  {
-    order: 3,
-    provider: 'AWS Academy',
-    title: 'Cloud Foundation',
-    date: 'Jun 2021',
-    skills: ['AWS', 'Cloud fundamentals'],
-  },
-  {
-    order: 4,
-    provider: 'AWS',
-    title: 'Getting Started with Serverless',
-    date: 'Jul 2023',
-    skills: ['API Gateway', 'CloudFormation', 'Serverless'],
-  },
-  {
-    order: 5,
-    provider: '42 São Paulo',
-    title: 'Ethical Web Hacking',
-    date: 'Sep 2024',
-    skills: ['Python', 'Docker', 'Web security'],
-  },
-  {
-    order: 1,
-    provider: 'Certiprof',
-    title: 'Lifelong Learning',
-    date: 'Jul 2020',
-    skills: ['Growth mindset', 'Continuous learning'],
-  },
-].sort((a, b) => a.order - b.order)
-
-const projects = [
-  {
-    tag: 'Blue Origin',
-    industry: 'Aerospace',
-    icon: Rocket,
-    tone: 'aerospace',
-    title: 'Supplier Data API',
-    text: 'Built and maintained a supplier data API integrated with Databricks, centralizing procurement visibility for aerospace supply-chain systems.',
-    stack: ['Java', 'Databricks', 'Aerospace data'],
-  },
-  {
-    tag: 'Blue Origin',
-    industry: 'Aerospace',
-    icon: Rocket,
-    tone: 'aerospace',
-    title: 'Approved Components Catalog',
-    text: 'Designed a centralized catalog for approved aerospace components, supporting reuse, reducing redundancy, and improving technical decisions.',
-    stack: ['Frontend', 'Backend', 'Supply chain'],
-  },
-  {
-    tag: 'Itaú Unibanco',
-    industry: 'Banking',
-    icon: Landmark,
-    tone: 'banking',
-    title: 'Banking Platforms',
-    text: 'Worked on financing, insurance quotation, and access management platforms for banking channels with high-volume user bases.',
-    stack: ['Java', 'APIs', 'Banking'],
-  },
+  { title: 'Backend', items: ['Java', 'Kotlin', 'REST APIs', 'Spring Boot'] },
+  { title: 'Frontend', items: ['React', 'Vite', 'Product UI'] },
+  { title: 'Data & Cloud', items: ['SQL', 'Databricks', 'AWS', 'Terraform'] },
+  { title: 'Quality & Ops', items: ['Postman · Insomnia', 'CloudWatch · Datadog', 'CI/CD', 'Automated tests'] },
 ]
 
 const awards = [
   {
     title: 'GenAI Hackathon Award',
-    source: 'Blue Origin',
-    text: 'Recognized for Project DRILL, a vision AI prototype that extracts engineering specs from drawings into searchable data.',
+    text: 'Project DRILL — vision AI that extracts engineering specs from drawings into searchable data.',
+    meta: 'Blue Origin',
   },
   {
     title: 'Merit Bonus',
-    source: 'Itaú Unibanco',
-    text: 'Recognition for delivering an auto insurance service, improving simulation flows and reducing operational complexity.',
+    text: 'Delivered an auto insurance service that simplified simulation flows.',
+    meta: 'Itaú',
   },
   {
     title: 'Highlight Project EXPO',
-    source: 'College project recognition',
-    text: 'Awarded for project impact and delivery quality during a technical showcase.',
+    text: 'Recognized for project impact and delivery quality.',
+    meta: 'College',
   },
 ]
 
-const timeline = [
-  {
-    period: '2025 - Now',
-    company: 'Blue Origin',
-    title: 'Frontend growth at Blue Origin',
-    text: 'Currently working more with frontend and product interfaces, while using advanced backend context from APIs, data, and platform systems.',
-  },
-  {
-    period: '2020 - 2025',
-    company: 'Itaú Unibanco',
-    title: 'Advanced backend foundation at Itaú Unibanco',
-    text: 'Built a strong backend foundation through APIs, automation, and banking features across requirements, development, testing, delivery, and support.',
-  },
-  {
-    period: '2019 - 2022',
-    company: 'College',
-    title: 'Computer Science background',
-    text: 'Bachelor in Computer Science, with additional studies in English and an ongoing Theology degree.',
-  },
+const certifications = [
+  { title: 'Lifelong Learning', text: 'Certiprof', meta: '2020' },
+  { title: 'Introduction to IoT', text: 'Cisco', meta: '2021' },
+  { title: 'Cloud Foundation', text: 'AWS Academy', meta: '2021' },
+  { title: 'Getting Started with Serverless', text: 'AWS', meta: '2023' },
+  { title: 'Ethical Web Hacking', text: '42 São Paulo', meta: '2024' },
 ]
 
-const timelineYears = ['2019', '2020', '2021', '2022', '2023', '2024', '2025', 'Now']
-
-const timelineTracks = [
-  {
-    period: '2019 - 2022',
-    place: 'Computer Science',
-    left: 0,
-    width: 43,
-    tone: 'study',
-  },
-  {
-    period: '2020 - 2025',
-    place: 'Itaú Unibanco',
-    left: 14,
-    width: 72,
-    tone: 'banking',
-  },
-  {
-    period: '2025 - Now',
-    place: 'Blue Origin',
-    left: 76,
-    width: 24,
-    tone: 'aerospace',
-  },
+const interests = [
+  { icon: Crosshair, label: 'FPS games' },
+  { icon: BookOpen, label: 'Manga' },
+  { icon: Map, label: 'Travel' },
 ]
 
-const personalTraits = [
-  'Video games and FPS',
-  'Manga reader',
-  'Travel',
+const chartData = [
+  { label: 'Availability', value: 99.98, display: '99.98%' },
+  { label: 'Test coverage', value: 92, display: '92%' },
+  { label: 'Deploy frequency', value: 78, display: '78%' },
 ]
 
-const careerBuild = [
-  { label: 'Backend', value: 92 },
-  { label: 'Frontend', value: 66 },
-  { label: 'Full stack', value: 76 },
-]
+function Section({ id, index, title, children }) {
+  return (
+    <section id={id} className="section">
+      <header className="sectionHeader">
+        <h2>{title}</h2>
+        <span className="mono">{index}</span>
+      </header>
+      {children}
+    </section>
+  )
+}
 
-const tabs = [
-  { id: 'about', label: 'About' },
-  { id: 'skills', label: 'Skills' },
-  { id: 'work', label: 'Work' },
-  { id: 'timeline', label: 'Timeline' },
-  { id: 'contact', label: 'Contact' },
-]
+function RowList({ label, rows }) {
+  return (
+    <div className="rowList">
+      <span className="mono label">{label}</span>
+      <ul>
+        {rows.map((row) => (
+          <li key={row.title}>
+            <div>
+              <strong>{row.title}</strong>
+              <p>{row.text}</p>
+            </div>
+            <span className="mono">{row.meta}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
 
 function App() {
-  const [activeTab, setActiveTab] = useState('about')
+  const [activeTab, setActiveTab] = useState('overview')
+
+  function openSection(id) {
+    setActiveTab(id)
+    window.setTimeout(() => document.getElementById(id === 'more' ? 'recognition' : id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0)
+  }
 
   return (
-    <main>
+    <div className="page">
       <nav className="nav">
-        <a className="brand" href="#top" aria-label="Back to top">
-          <span className="brandMark">R</span>
-          <span>Raphaela.dev</span>
+        <a className="brand" href="#top">
+          Raphaela Oliveira
         </a>
         <div className="navLinks">
-          {tabs.map((tab) => (
-            <button
-              className={activeTab === tab.id ? 'active' : ''}
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-            >
-              {tab.label}
+          {navLinks.map((link) => (
+            <button key={link.id} className="navTab" onClick={() => openSection(link.id)}>
+              {link.label}
             </button>
           ))}
+          <a className="navCta" href={LINKEDIN} target="_blank" rel="noreferrer">
+            LinkedIn ↗
+          </a>
         </div>
       </nav>
 
-      <section id="top" className="hero">
-        <div className="heroGrid">
+      <main>
+        <section id="top" className="hero">
+          <Rocket className="heroRocket" aria-hidden="true" />
           <div className="heroCopy">
-            <span className="eyebrow">
-              <Gamepad2 size={16} /> full stack player
-            </span>
-            <h1>Advanced backend, growing frontend.</h1>
-            <p>
-              I am Raphaela Oliveira, a software engineer with advanced backend experience who is now
-              growing into frontend work and building toward full-stack range.
-            </p>
-            <div className="heroActions">
-              <button className="primaryBtn" type="button" onClick={() => setActiveTab('work')}>
-                View projects <ArrowUpRight size={18} />
-              </button>
-              <button className="ghostBtn" type="button" onClick={() => setActiveTab('contact')}>
-                Contact me
-              </button>
-            </div>
-            <div className="statBar" aria-label="Professional summary">
-              {stats.map((stat) => (
-                <div key={stat.label}>
-                  <span>{stat.label}</span>
-                  <strong>{stat.value}</strong>
-                </div>
-              ))}
+            <span className="status mono"><i aria-hidden="true" /> Aerospace systems · Florida, USA</span>
+            <h1>Software Development Engineer growing into the full stack.</h1>
+            <p>I build APIs, data platforms and, more and more, the interfaces on top of them — across aerospace at Blue Origin and banking at Itaú Unibanco.</p>
+            <div className="actions">
+              <button className="btnPrimary" onClick={() => setActiveTab('work')}>View selected work <ArrowDownRight size={16} /></button>
+              <a className="btnGhost" href={LINKEDIN} target="_blank" rel="noreferrer"><Linkedin size={16} /> LinkedIn</a>
             </div>
           </div>
+          <img className="photo" src={`${import.meta.env.BASE_URL}raphaela-dev.jpg`} alt="Raphaela Oliveira wearing a cap and hoodie while traveling" />
+        </section>
 
-          <aside className="profilePanel" aria-label="Profile highlights">
-            <div className="profileHudTop">
-              <span>rank: software engineer</span>
-              <span>class: full stack</span>
-            </div>
-            <div className="profileImageWrap">
-              <img src="/raphaela-dev.jpg" alt="Raphaela Oliveira wearing a hoodie while traveling" />
-              <div className="crosshair" aria-hidden="true">
-                <Crosshair size={34} />
-              </div>
-              <div className="imageHud">
-                <span>build mode</span>
-                <strong>active</strong>
-              </div>
-            </div>
-            <span className="panelKicker">current loadout</span>
-            <h2>Advanced backend with frontend growth</h2>
-            <p>Advanced backend foundation, current frontend focus, and a growing full-stack profile across aerospace and banking platforms.</p>
-            <div className="buildMeters" aria-label="Career build progression">
-              {careerBuild.map((item) => (
-                <div className="buildMeter" key={item.label}>
-                  <span>{item.label}</span>
-                  <div>
-                    <i style={{ width: `${item.value}%` }} />
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="miniStack">
-              <span>React</span>
-              <span>UI</span>
-              <span>Java</span>
-              <span>AWS</span>
-              <span>SQL</span>
-            </div>
-          </aside>
-        </div>
+        <dl className="facts">{facts.map((fact) => <div key={fact.label}><dt className="mono">{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>
 
-      </section>
-
-      <div className="tabBar" role="tablist" aria-label="Portfolio sections">
-        {tabs.map((tab) => (
-          <button
-            aria-selected={activeTab === tab.id}
-            className={activeTab === tab.id ? 'active' : ''}
-            key={tab.id}
-            role="tab"
-            type="button"
-            onClick={() => setActiveTab(tab.id)}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {activeTab === 'about' && (
-      <section className="section aboutSection">
-        <div className="aboutCopy">
-          <span className="eyebrow">
-            <Gamepad2 size={16} /> about me
-          </span>
-          <h2>Player outside work, engineer at work.</h2>
-          <p>
-            Outside the technical side, I like video games, especially FPS titles, reading manga, and traveling.
-            I bring that same curiosity into how I learn, explore new places, and keep improving over time.
-          </p>
-        </div>
-        <div className="aboutTraits" aria-label="Personal interests">
-          {personalTraits.map((trait) => (
-            <span key={trait}>{trait}</span>
+        <div className="tabs" role="tablist" aria-label="Portfolio sections">
+          {[['overview', 'Overview'], ['work', 'Selected work'], ['experience', 'Experience'], ['skills', 'Toolkit'], ['more', 'More']].map(([id, label]) => (
+            <button key={id} role="tab" aria-selected={activeTab === id} className={activeTab === id ? 'tab active' : 'tab'} onClick={() => setActiveTab(id)}>{label}</button>
           ))}
         </div>
-      </section>
-      )}
 
-      {activeTab === 'skills' && (
-      <>
-      <section className="section">
-        <div className="sectionHeader">
-          <span className="eyebrow">
-            <Zap size={16} /> loadout
-          </span>
-          <h2>Core strengths.</h2>
-        </div>
-        <div className="skillGrid">
-          {skills.map(({ icon: Icon, title, level, items }) => (
-            <article className="skillCard" key={title}>
-              <div className="cardIcon">
-                <Icon size={22} />
-              </div>
-              <h3>{title}</h3>
-              <div className="skillLevel" aria-label={`${title} level ${level} of 5`}>
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <i className={index < level ? 'filled' : ''} key={`${title}-${index}`} />
-                ))}
-              </div>
-              <ul>
-                {items.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-      </section>
+        {activeTab === 'overview' && <section className="overviewPanel" aria-label="Overview">
+          <div className="overviewIntro"><span className="mono">01 · TOOLKIT</span><h2>Skills with a point of view.</h2><p>A practical toolkit shaped by systems, delivery and product thinking.</p></div>
+          <div className="skillSignals">{skills.map((group, index) => <div className="skillSignal" key={group.title}><span className="mono">{String(index + 1).padStart(2, '0')}</span><div><h3>{group.title}</h3><p>{group.items.join(' · ')}</p></div></div>)}</div>
+        </section>}
 
-      <section className="section coursesSection">
-        <div className="sectionHeader">
-          <span className="eyebrow">
-            <BadgeCheck size={16} /> credentials
-          </span>
-          <h2>Courses and certifications.</h2>
-        </div>
-        <div className="courseTimeline" aria-label="Courses timeline">
-          {courses.map((course) => (
-            <article className="courseCard" key={course.title}>
-              <div className="courseMeta">
-                <span>{course.provider}</span>
-                <strong>{course.date}</strong>
-              </div>
-              <h3>{course.title}</h3>
-              <div className="chips courseChips">
-                {course.skills.map((skill) => (
-                  <small key={skill}>{skill}</small>
-                ))}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-      </>
-      )}
+        {activeTab === 'work' && <Section id="work" index="01" title="Mission log"><ol className="workList">{work.map((item, i) => <li key={item.title}><span className="mono num">{String(i + 1).padStart(2, '0')}</span><div className="workTitle"><h3>{item.title}</h3><span>{item.company}</span></div><div className="workBody"><p>{item.text}</p><span className="mono stack">{item.stack}</span></div></li>)}</ol></Section>}
 
-      {activeTab === 'work' && (
-      <section className="section projectsSection">
-        <div className="sectionHeader">
-          <span className="eyebrow">
-            <Trophy size={16} /> highlights
-          </span>
-          <h2>Selected impact.</h2>
-        </div>
-        <div className="projectGrid">
-          {projects.map((project) => (
-            <article className={`projectCard ${project.tone}`} key={project.title}>
-              <div className="industryBadge">
-                <project.icon size={18} />
-                <span>{project.industry}</span>
-              </div>
-              <span className="projectCompany">{project.tag}</span>
-              <h3>{project.title}</h3>
-              <p>{project.text}</p>
-              <div className="chips">
-                {project.stack.map((item) => (
-                  <small key={item}>{item}</small>
-                ))}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-      )}
+        {activeTab === 'experience' && <Section id="experience" index="02" title="Experience"><div className="timelineCard"><div className="timelineHeader"><div><h3>Career progression</h3><p>From internship to full-stack systems</p></div><span className="mono">2020 — Now</span></div><div className="timelineLegend"><span><i className="legendSwatch purple" /> Career growth</span><span><i className="legendSwatch yellow" /> Company transition</span></div><div className="careerLineChart"><svg viewBox="0 0 900 125" role="img" aria-label="Career progression line chart"><path d="M 15 112 C 110 100 190 92 280 72 S 405 48 485 30 S 680 16 850 8" /><circle cx="15" cy="112" r="6" /><circle cx="280" cy="72" r="6" /><circle cx="485" cy="30" r="6" /><circle cx="850" cy="8" r="6" /><text x="15" y="128">2020 · Intern</text><text x="280" y="128">2021 · Junior</text><text x="485" y="128">2024 · Mid-Level</text><text x="760" y="128">2025 · Blue Origin</text></svg></div><div className="timelineAxis">{[{ year: '2020', company: 'Itaú Unibanco', detail: 'Software Engineer Internship', tone: 'yellow' }, { year: '2021', company: 'Itaú Unibanco', detail: 'Junior Software Engineer', tone: 'purple' }, { year: '2024', company: 'Itaú Unibanco', detail: 'Mid-Level Software Engineer', tone: 'purple' }, { year: '2025', company: 'Blue Origin', detail: 'Junior Software Engineer', tone: 'yellow' }].map((item) => <div className="timelineMilestone" key={`${item.year}-${item.company}`}><span className="mono">{item.year}</span><div className={`timelineBar ${item.tone}`} /><strong>{item.company}</strong><small>{item.detail}</small></div>)}</div></div><ol className="expList">{experience.map((item) => <li key={item.company}><span className="mono period">{item.period}</span><div className="expRole"><h3>{item.company}</h3><span>{item.role}</span></div><p>{item.text}</p></li>)}</ol></Section>}
 
-      {activeTab === 'timeline' && (
-      <>
-      <section className="section awardsSection">
-        <div className="sectionHeader">
-          <span className="eyebrow">
-            <Trophy size={16} /> awards
-          </span>
-          <h2>Recognition worth keeping visible.</h2>
-        </div>
-        <div className="awardGrid">
-          {awards.map((award) => (
-            <article className="awardCard" key={award.title}>
-              <span>{award.source}</span>
-              <h3>{award.title}</h3>
-              <p>{award.text}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+        {activeTab === 'skills' && <Section id="skills" index="03" title="Systems toolkit"><div className="skillGrid">{skills.map((group) => <div key={group.title}><h3>{group.title}</h3><ul>{group.items.map((item) => <li key={item}>{item}</li>)}</ul></div>)}</div></Section>}
 
-      <section className="section splitSection">
-        <div>
-          <span className="eyebrow">
-            <Terminal size={16} /> progress log
-          </span>
-          <h2>From APIs to interfaces.</h2>
-          <p>
-            My path started with backend engineering, APIs, and production systems. Today I am working more
-            with frontend and product UI, using that backend base to become a stronger full-stack engineer.
-          </p>
-        </div>
-        <div className="careerMap" aria-label="Career timeline by year and company">
-          <div className="yearAxis" aria-hidden="true">
-            {timelineYears.map((year) => (
-              <span key={year}>{year}</span>
-            ))}
-          </div>
-          <div className="timelineGraph">
-            {timelineTracks.map((track) => (
-              <div className="timelineTrack" key={track.place}>
-                <span>{track.period}</span>
-                <div className="trackLine">
-                  <i
-                    className={track.tone}
-                    style={{ left: `${track.left}%`, width: `${track.width}%` }}
-                  >
-                    <strong>{track.place}</strong>
-                  </i>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="timeline">
-          {timeline.map((item) => (
-            <article key={item.title}>
-              <strong>{item.period}</strong>
-              <span>{item.company}</span>
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-            </article>
-          ))}
+        {activeTab === 'more' && <><Section id="recognition" index="04" title="Flight record"><div className="twoCols"><RowList label="Awards" rows={awards} /><RowList label="Certifications" rows={certifications} /></div></Section><Section id="about" index="05" title="Beyond the mission"><div className="about"><p>I play FPS games, read manga and travel whenever I can. Strategy, good stories and new places keep me curious — and that curiosity is a big part of how I keep growing as an engineer.</p><ul>{interests.map(({ icon: Icon, label }) => <li key={label}><Icon size={18} /> {label}</li>)}</ul></div></Section></>}
+      </main>
+
+      <footer className="contact">
+        <p>Open to frontend and full-stack roles where backend context matters.</p>
+        <a className="email" href={LINKEDIN} target="_blank" rel="noreferrer">
+          Connect on LinkedIn ↗
+        </a>
+        <div className="footerBottom">
+          <span>© {new Date().getFullYear()} Raphaela Oliveira</span>
+          <div>
+            <a href={LINKEDIN} target="_blank" rel="noreferrer">
+              LinkedIn <ArrowUpRight size={13} />
+            </a>
+            <a href="#top">Back to top ↑</a>
           </div>
         </div>
-      </section>
-      </>
-      )}
-
-      {activeTab === 'contact' && (
-      <section id="contact" className="contact">
-        <div>
-          <span className="eyebrow">
-            <Braces size={16} /> next round
-          </span>
-          <h2>Reliable systems. Sharp interfaces.</h2>
-          <p>
-            Frontend growth with advanced backend experience, API context, testing, observability, data visibility, and a bilingual
-            profile: Portuguese native and intermediate English.
-          </p>
-        </div>
-        <div className="contactActions">
-          <a href="mailto:raphaelaoliveira79@gmail.com">
-            <Mail size={18} /> Email
-          </a>
-          <a href="https://www.linkedin.com/in/raphaelaoliveirajava" target="_blank" rel="noreferrer">
-            <Linkedin size={18} /> LinkedIn
-          </a>
-          <a href="#top">
-            <Code2 size={18} /> Back to top
-          </a>
-        </div>
-      </section>
-      )}
-    </main>
+      </footer>
+    </div>
   )
 }
 
