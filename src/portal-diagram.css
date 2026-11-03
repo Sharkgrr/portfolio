@@ -51,4 +51,14 @@
 .taskBadge { font-size: 10px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 8px; }
 .caseStudy .diagramNote { font-size: 12px; margin-top: 18px; }
 @media (max-width: 600px) { .awsDiagram { padding: 14px; } .diagramHeading { flex-direction: column; } .diagramShell, .diagramCloud { padding: 12px; } .diagramBranches { gap: 8px; } .diagramShell > header .mono { display: none; } .iframeContent { padding: 8px; } .diagramConnection span { font-size: 9px; overflow-wrap: anywhere; } .diagramService strong { font-size: 14px; } }
+@media (max-width: 600px) {
+  .capabilityStrip, .diagramBranches { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .diagramHeading button { min-height: 44px; }
+  .diagramShell > header { flex-wrap: wrap; }
+  .diagramBrowser, .diagramAlb, .diagramRouter { flex-wrap: wrap; padding: 12px; }
+  .diagramBrowser code { overflow-wrap: anywhere; }
+  .cloudLabel span { display: block; margin: 6px 0 0; }
+  .iframeContent { padding: 12px; }
+  .iframeContent code, .iframeRow, .diagramService .mono, .taskBadge { font-size: 12px; }
+}
 @media (prefers-reduced-motion: reduce) { .trafficDots { animation: none; } }

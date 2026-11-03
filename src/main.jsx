@@ -140,6 +140,12 @@ function Navigation({ activeTab, darkMode, onNavigate, onToggleTheme }) {
         </div>
       </nav>
       <nav className="tabs" aria-label="Portfolio sections">
+        <label className="mobileMenu" htmlFor="section-menu">
+          <span className="mono">Explore</span>
+          <select id="section-menu" value={activeTab === CASE_ROUTE ? 'work' : activeTab} onChange={event => onNavigate(event.target.value)}>
+            {TAB_OPTIONS.map(tab => <option key={tab.id} value={tab.id}>{tab.label}</option>)}
+          </select>
+        </label>
         {TAB_OPTIONS.map(tab => <a key={tab.id} href={`#${tab.id}`} aria-current={activeTab === tab.id || (activeTab === CASE_ROUTE && tab.id === 'work') ? 'page' : undefined} className={activeTab === tab.id || (activeTab === CASE_ROUTE && tab.id === 'work') ? 'tab active' : 'tab'}>{tab.label}</a>)}
       </nav>
     </>
