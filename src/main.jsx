@@ -2,16 +2,21 @@ import React, { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ArrowDownRight, ArrowUpRight, BookOpen, Crosshair, Linkedin, Map, Moon, Rocket, Sun } from 'lucide-react'
 import './styles.css'
+import PortalHubCase, { PortalHubCard } from './PortalHubCase'
 
 const LINKEDIN_URL = 'https://www.linkedin.com/in/raphaelaoliveirajava'
 const THEME_STORAGE_KEY = 'portfolio-theme'
 const CURRENT_YEAR = new Date().getFullYear()
 const DEFAULT_TAB = 'overview'
-const MORE_SECTION_ID = 'recognition'
+const CASE_ROUTE = 'portal-hub'
+function readRoute() {
+  const route = window.location.hash.slice(1)
+  return route === CASE_ROUTE || TAB_OPTIONS.some(tab => tab.id === route) ? route : DEFAULT_TAB
+}
 
 const TAB_OPTIONS = [
   { id: 'overview', label: 'Overview' },
-  { id: 'work', label: 'Selected work' },
+  { id: 'work', label: 'Mission log' },
   { id: 'experience', label: 'Experience' },
   { id: 'skills', label: 'Toolkit' },
   { id: 'more', label: 'More' },
@@ -78,6 +83,7 @@ const INTERESTS = [
 ]
 
 const PANEL_COMPONENTS = {
+  'portal-hub': PortalHubCase,
   overview: Overview,
   work: WorkPanel,
   experience: ExperiencePanel,
@@ -127,15 +133,15 @@ function Navigation({ activeTab, darkMode, onNavigate, onToggleTheme }) {
   return (
     <>
       <nav className="nav">
-        <a className="brand" href="#top">Raphaela Oliveira</a>
+        <a className="brand" href="#overview">Raphaela Oliveira</a>
         <div className="navLinks">
           <button className="themeToggle" onClick={onToggleTheme} aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>{darkMode ? <Sun size={16} /> : <Moon size={16} />}</button>
           <ExternalLink className="navCta">Let's connect ↗</ExternalLink>
         </div>
       </nav>
-      <div className="tabs" role="tablist" aria-label="Portfolio sections">
-        {TAB_OPTIONS.map((tab) => <button key={tab.id} role="tab" aria-selected={activeTab === tab.id} className={activeTab === tab.id ? 'tab active' : 'tab'} onClick={() => onNavigate(tab.id)}>{tab.label}</button>)}
-      </div>
+      <nav className="tabs" aria-label="Portfolio sections">
+        {TAB_OPTIONS.map(tab => <a key={tab.id} href={`#${tab.id}`} aria-current={activeTab === tab.id || (activeTab === CASE_ROUTE && tab.id === 'work') ? 'page' : undefined} className={activeTab === tab.id || (activeTab === CASE_ROUTE && tab.id === 'work') ? 'tab active' : 'tab'}>{tab.label}</a>)}
+      </nav>
     </>
   )
 }
@@ -143,6 +149,7 @@ function Navigation({ activeTab, darkMode, onNavigate, onToggleTheme }) {
 function Overview() {
   return (
     <section className="overviewPanel" aria-label="Overview">
+      <PortalHubCard />
       <div className="overviewIntro"><span className="mono">01 · TOOLKIT</span><h2>Skills with a point of view.</h2><p>A practical toolkit shaped by systems, delivery and product thinking.</p></div>
       <div className="skillSignals">{SKILL_GROUPS.map((group, index) => <div className="skillSignal" key={group.title}><span className="mono">{String(index + 1).padStart(2, '0')}</span><div><h3>{group.title}</h3><p>{group.items.join(' · ')}</p></div></div>)}</div>
       <article className="featuredWork"><div><span className="mono">FEATURED PROJECT · 01</span><h3>Supplier Data API</h3><p>{WORK_ITEMS[0].text}</p></div><span className="mono">{WORK_ITEMS[0].stack}</span></article>
@@ -151,7 +158,7 @@ function Overview() {
 }
 
 function WorkPanel() {
-  return <Section id="work" index="01" title="Mission log"><ol className="workList">{WORK_ITEMS.map((item, index) => <li key={item.title}><span className="mono num">{String(index + 1).padStart(2, '0')}</span><div className="workTitle"><h3>{item.title}</h3><span>{item.company}</span></div><div className="workBody"><p>{item.text}</p><span className="mono stack">{item.stack}</span></div></li>)}</ol></Section>
+  return <Section id="work" index="01" title="Mission log"><PortalHubCard /><ol className="workList">{WORK_ITEMS.map((item, index) => <li key={item.title}><span className="mono num">{String(index + 1).padStart(2, '0')}</span><div className="workTitle"><h3>{item.title}</h3><span>{item.company}</span></div><div className="workBody"><p>{item.text}</p><span className="mono stack">{item.stack}</span></div></li>)}</ol></Section>
 }
 
 function CareerTimeline() {
@@ -179,7 +186,7 @@ function Footer() {
 }
 
 function App() {
-  const [activeTab, setActiveTab] = useState(DEFAULT_TAB)
+  const [activeTab, setActiveTab] = useState(readRoute)
   const [darkMode, setDarkMode] = useState(() => window.localStorage.getItem(THEME_STORAGE_KEY) === 'dark')
 
   useEffect(() => {
@@ -188,9 +195,24 @@ function App() {
     return () => document.body.classList.remove('darkMode')
   }, [darkMode])
 
+  useEffect(() => {
+    const syncRoute = () => setActiveTab(readRoute())
+    window.addEventListener('hashchange', syncRoute)
+    return () => window.removeEventListener('hashchange', syncRoute)
+  }, [])
+
+  useEffect(() => {
+    if (activeTab === DEFAULT_TAB) return
+    const frame = requestAnimationFrame(() => {
+      const panel = document.getElementById('content-panel')
+      panel?.focus({ preventScroll: true })
+      panel?.scrollIntoView({ behavior: 'instant', block: 'start' })
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [activeTab])
+
   function openSection(id) {
-    setActiveTab(id)
-    window.setTimeout(() => document.getElementById(id === 'more' ? MORE_SECTION_ID : id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0)
+    window.location.hash = id
   }
 
   const isSection = activeTab !== DEFAULT_TAB
@@ -208,7 +230,7 @@ function App() {
       <main>
         <Hero onNavigate={openSection} />
         <Facts />
-        <ActivePanel />
+        <div id="content-panel" tabIndex={-1}><ActivePanel /></div>
       </main>
       <Footer />
     </div>
