@@ -3,9 +3,9 @@
   --ink: #141414;
   --muted: #6b6b66;
   --line: #e6e4df;
-  --accent: #d69e00;
-  --yellow: #f2c94c;
-  --yellow-soft: #fff7d6;
+  --accent: #d97706;
+  --yellow: #f59e0b;
+  --yellow-soft: #fff3d6;
   --sans: 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
   --max: 1040px;
@@ -70,8 +70,21 @@ a:focus-visible {
 
 .page {
   max-width: calc(var(--max) + var(--gutter) * 2);
+  min-height: 100vh;
   margin: 0 auto;
   padding: 0 var(--gutter);
+  background: var(--bg);
+  color: var(--ink);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+body.darkMode {
+  background: #0d1220;
+}
+
+body.darkMode::selection {
+  background: #f3f5fb;
+  color: #0d1220;
 }
 
 .mono {
@@ -112,7 +125,8 @@ a:focus-visible {
 }
 
 .navTab,
-.tab {
+.tab,
+.themeToggle {
   appearance: none;
   border: 0;
   background: transparent;
@@ -134,13 +148,36 @@ a:focus-visible {
   color: var(--bg);
 }
 
+.themeToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.themeToggle:hover {
+  background: var(--yellow);
+  border-color: var(--yellow);
+}
+
 .tabs {
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  padding: 20px 0 0;
+  gap: 14px;
+  padding: 16px 0;
+  margin-bottom: 16px;
   border-top: 1px solid #dfe6f5;
+  background: rgba(250, 250, 248, 0.94);
+  backdrop-filter: blur(12px);
 }
 
 .tab {
@@ -231,6 +268,34 @@ a:focus-visible {
   line-height: 1.5;
 }
 
+.featuredWork {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 24px;
+  background: #f4f7ff;
+  border: 1px solid #dfe6f5;
+  border-radius: 12px;
+}
+
+.featuredWork h3 {
+  margin: 8px 0;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.featuredWork p {
+  max-width: 680px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.featuredWork > .mono:last-child {
+  color: #8066e8;
+  white-space: nowrap;
+}
+
 .metricTop {
   display: flex;
   justify-content: space-between;
@@ -259,13 +324,67 @@ a:focus-visible {
   border-radius: inherit;
 }
 
+.buyerFeature { align-items: center; border-left: 4px solid var(--yellow); }
+.buyerFeature h2 { font-size: 32px; margin: 12px 0; }
+.caseLink { display: inline-block; margin-top: 16px; color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 5px; }
+#content-panel { scroll-margin-top: 150px; }
+.caseStudy { max-width: 850px; }
+.caseStudy h1 { font-size: clamp(30px, 5vw, 48px); line-height: 1.15; margin: 16px 0; }
+.caseStudy p { color: var(--muted); max-width: 70ch; }
+.caseSection { display: flex; gap: 24px; padding: 24px 0; border-top: 1px solid var(--line); }
+.caseSection h2 { font-size: 24px; margin-bottom: 12px; }
+.portalArchitecture { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.portalShell, .portalBalancer, .portalRoute { padding: 24px; }
+.portalShell { border-top: 4px solid var(--yellow); }
+.portalBalancer { background: var(--line); }
+.portalRoute { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; border-top: 1px solid var(--line); }
+.portalRoute code { display: inline-block; color: var(--accent); margin: 8px 0; overflow-wrap: anywhere; }
+.portalArchitecture h2 { font-size: 24px; }
+.portalArchitecture h3 { font-size: 20px; }
+@media (max-width: 720px) { .portalRoute { grid-template-columns: 1fr; } }
+.caseStudy summary { cursor: pointer; font-weight: 600; padding: 16px 0; }
+.caseStudy pre { overflow-x: auto; padding: 24px; background: var(--line); border-radius: 8px; font-size: 13px; }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--yellow); outline-offset: 4px; }
+@media (max-width: 720px) { .tabs { gap: 8px; } .caseSection { gap: 12px; } }
+
 /* Hero */
+.isSection .hero {
+  gap: 0;
+  padding: 22px 0;
+  background: transparent;
+  border-radius: 0;
+  transition: padding 0.28s ease;
+}
+
+.isSection .hero::after { display: none; }
+
+.isSection .heroRocket,
+.isSection .status,
+.isSection .heroCopy p,
+.isSection .actions,
+.isSection .photo,
+.isSection .facts {
+  display: none;
+}
+
+.isSection .heroCopy {
+  width: 100%;
+}
+
+.isSection .hero h1 {
+  max-width: none;
+  font-size: 24px;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+}
+
 .hero {
   position: relative;
   display: flex;
   align-items: flex-end;
-  gap: 64px;
-  padding: 72px 24px 64px;
+  gap: 40px;
+  padding: 56px 24px 48px;
   overflow: hidden;
   background-color: #f4f7ff;
   background-image: radial-gradient(circle at 88% 22%, rgba(128, 102, 232, 0.22) 0 2px, transparent 3px), radial-gradient(circle at 72% 72%, rgba(242, 201, 76, 0.18) 0 2px, transparent 3px);
@@ -323,7 +442,7 @@ a:focus-visible {
 
 .hero h1 {
   max-width: 640px;
-  font-size: clamp(44px, 7vw, 76px);
+  font-size: clamp(40px, 5.4vw, 60px);
   font-weight: 600;
   line-height: 1.02;
   letter-spacing: -0.033em;
@@ -367,6 +486,11 @@ a:focus-visible {
   opacity: 0.85;
 }
 
+.page.dark .btnPrimary {
+  background: var(--yellow);
+  color: #141414;
+}
+
 .btnGhost:hover {
   text-decoration: underline;
   text-underline-offset: 4px;
@@ -374,8 +498,8 @@ a:focus-visible {
 
 .photo {
   flex-shrink: 0;
-  width: 300px;
-  height: 380px;
+  width: 260px;
+  height: 330px;
   object-fit: cover;
   object-position: 42% center;
   border-radius: 4px;
@@ -839,6 +963,11 @@ a:focus-visible {
     grid-template-columns: 1fr;
   }
 
+  .featuredWork {
+    flex-direction: column;
+    gap: 16px;
+  }
+
   .skillSignal:nth-child(2) {
     border-top: 1px solid var(--line);
   }
@@ -909,6 +1038,69 @@ a:focus-visible {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+.page.dark {
+  --bg: #0d1220;
+  --ink: #f3f5fb;
+  --muted: #aeb9cc;
+  --line: #2a3550;
+  --yellow-soft: #3a2412;
+  --accent: #f59e0b;
+  color-scheme: dark;
+}
+
+.page.dark .hero {
+  background-color: #151c2e;
+  background-image: radial-gradient(circle at 88% 22%, rgba(128, 102, 232, 0.28) 0 2px, transparent 3px), radial-gradient(circle at 72% 72%, rgba(242, 201, 76, 0.16) 0 2px, transparent 3px);
+}
+
+.page.dark .sectionHeader,
+.page.dark .tabs,
+.page.dark .facts,
+.page.dark .workList li,
+.page.dark .expList li {
+  border-color: #2a3550;
+}
+
+.page.dark .tabs {
+  background: rgba(13, 18, 32, 0.94);
+}
+
+.page.dark .featuredWork {
+  background: #151c2e;
+  border-color: #2a3550;
+}
+
+.page.dark .featuredWork > .mono:last-child,
+.page.dark .sectionHeader .mono {
+  color: var(--yellow);
+}
+
+.page.dark .timelineCard {
+  background: #151c2e;
+  border-color: #2a3550;
+  color: var(--ink);
+}
+
+.page.dark .timelineHeader p,
+.page.dark .timelineCard .mono,
+.page.dark .timelineMilestone small {
+  color: #aeb9cc;
+}
+
+.page.dark .careerLineChart text {
+  fill: #f3f5fb;
+}
+
+.page.dark .careerLineChart circle {
+  stroke: #151c2e;
+}
+
+.page.dark .skillSignal p,
+.page.dark .featuredWork p,
+.page.dark .contact > p {
+  color: #aeb9cc;
 }
 
 @media (prefers-reduced-motion: reduce) {
