@@ -77,6 +77,14 @@ const INTERESTS = [
   { icon: Map, label: 'Travel' },
 ]
 
+const PANEL_COMPONENTS = {
+  overview: Overview,
+  work: WorkPanel,
+  experience: ExperiencePanel,
+  skills: SkillsPanel,
+  more: MorePanel,
+}
+
 function Section({ id, index, title, children }) {
   return (
     <section id={id} className="section">
@@ -186,9 +194,25 @@ function App() {
   }
 
   const isSection = activeTab !== DEFAULT_TAB
-  const pageClass = `page${isSection ? ' isSection' : ''}${darkMode ? ' dark' : ''}`
+  const pageClass = ['page', isSection && 'isSection', darkMode && 'dark'].filter(Boolean).join(' ')
+  const ActivePanel = PANEL_COMPONENTS[activeTab] ?? Overview
 
-  return <div className={pageClass}><Navigation activeTab={activeTab} darkMode={darkMode} onNavigate={openSection} onToggleTheme={() => setDarkMode((value) => !value)} /><main><Hero onNavigate={openSection} /><Facts />{activeTab === 'overview' && <Overview />}{activeTab === 'work' && <WorkPanel />}{activeTab === 'experience' && <ExperiencePanel />}{activeTab === 'skills' && <SkillsPanel />}{activeTab === 'more' && <MorePanel />}</main><Footer /></div>
+  return (
+    <div className={pageClass}>
+      <Navigation
+        activeTab={activeTab}
+        darkMode={darkMode}
+        onNavigate={openSection}
+        onToggleTheme={() => setDarkMode((value) => !value)}
+      />
+      <main>
+        <Hero onNavigate={openSection} />
+        <Facts />
+        <ActivePanel />
+      </main>
+      <Footer />
+    </div>
+  )
 }
 
 createRoot(document.getElementById('root')).render(<App />)
