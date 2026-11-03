@@ -70,8 +70,21 @@ a:focus-visible {
 
 .page {
   max-width: calc(var(--max) + var(--gutter) * 2);
+  min-height: 100vh;
   margin: 0 auto;
   padding: 0 var(--gutter);
+  background: var(--bg);
+  color: var(--ink);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+body.darkMode {
+  background: #0d1220;
+}
+
+body.darkMode::selection {
+  background: #f3f5fb;
+  color: #0d1220;
 }
 
 .mono {
@@ -112,7 +125,8 @@ a:focus-visible {
 }
 
 .navTab,
-.tab {
+.tab,
+.themeToggle {
   appearance: none;
   border: 0;
   background: transparent;
@@ -134,13 +148,35 @@ a:focus-visible {
   color: var(--bg);
 }
 
+.themeToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.themeToggle:hover {
+  background: var(--yellow);
+  border-color: var(--yellow);
+}
+
 .tabs {
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   padding: 20px 0 0;
   border-top: 1px solid #dfe6f5;
+  background: rgba(250, 250, 248, 0.94);
+  backdrop-filter: blur(12px);
 }
 
 .tab {
@@ -231,6 +267,201 @@ a:focus-visible {
   line-height: 1.5;
 }
 
+.featuredWork {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 24px;
+  background: #f4f7ff;
+  border: 1px solid #dfe6f5;
+  border-radius: 12px;
+}
+
+.featuredWork h3 {
+  margin: 8px 0;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.featuredWork p {
+  max-width: 680px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.featuredWork > .mono:last-child {
+  color: #8066e8;
+  white-space: nowrap;
+}
+
+.routingDemo {
+  grid-column: 1 / -1;
+  padding: 24px;
+  background: #141b2d;
+  border-radius: 12px;
+  color: #fff;
+}
+
+.routingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 22px;
+}
+
+.routingHeader h3 {
+  margin: 8px 0 6px;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.routingHeader p {
+  color: #c6cede;
+  font-size: 14px;
+}
+
+.routingDemo .mono,
+.purchaseHead {
+  color: #9da9c2;
+}
+
+.routingStatus {
+  padding: 6px 10px;
+  border: 1px solid #52617d;
+  border-radius: 999px;
+  color: #8ee0bd;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.routingFlow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.purchaseLane {
+  display: grid;
+  grid-template-columns: 1fr 28px 1fr 28px 1fr;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.purchaseNode {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid #33405b;
+  border-radius: 8px;
+  background: #1c263c;
+}
+
+.purchaseNode strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.purchaseNode small {
+  color: #aeb9cc;
+  font-size: 12px;
+}
+
+.orderNode {
+  border-color: #52617d;
+}
+
+.ruleNode {
+  background: #222d45;
+}
+
+.ownerNode {
+  background: #203c3d;
+  border-color: #3f7067;
+}
+
+.ownerNode strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #8ee0bd;
+}
+
+.ownerNode i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #8ee0bd;
+}
+
+.flowArrow {
+  align-self: center;
+  color: #8ee0bd;
+  font-size: 22px;
+}
+
+.purchaseTable {
+  overflow-x: auto;
+}
+
+.purchaseTableInner {
+  min-width: 720px;
+}
+
+.purchaseRow {
+  display: grid;
+  grid-template-columns: 90px 1.2fr 1fr 90px 1.1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 14px 0;
+  border-top: 1px solid #2d3850;
+  font-size: 13px;
+}
+
+.purchaseHead {
+  padding: 0 0 10px;
+  border-top: 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+.priority {
+  justify-self: start;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.priority.high {
+  background: #5d3c5a;
+  color: #ffc2d5;
+}
+
+.priority.normal {
+  background: #30415a;
+  color: #b8c8e8;
+}
+
+.owner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.owner i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #8ee0bd;
+}
+
 .metricTop {
   display: flex;
   justify-content: space-between;
@@ -260,12 +491,40 @@ a:focus-visible {
 }
 
 /* Hero */
+.isSection .hero {
+  gap: 0;
+  padding: 22px 0;
+  background: transparent;
+  border-radius: 0;
+  transition: padding 0.28s ease;
+}
+
+.isSection .heroRocket,
+.isSection .status,
+.isSection .heroCopy p,
+.isSection .actions,
+.isSection .photo,
+.isSection .facts {
+  display: none;
+}
+
+.isSection .heroCopy {
+  width: 100%;
+}
+
+.isSection .hero h1 {
+  max-width: none;
+  font-size: 24px;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
 .hero {
   position: relative;
   display: flex;
   align-items: flex-end;
-  gap: 64px;
-  padding: 72px 24px 64px;
+  gap: 40px;
+  padding: 56px 24px 48px;
   overflow: hidden;
   background-color: #f4f7ff;
   background-image: radial-gradient(circle at 88% 22%, rgba(128, 102, 232, 0.22) 0 2px, transparent 3px), radial-gradient(circle at 72% 72%, rgba(242, 201, 76, 0.18) 0 2px, transparent 3px);
@@ -323,7 +582,7 @@ a:focus-visible {
 
 .hero h1 {
   max-width: 640px;
-  font-size: clamp(44px, 7vw, 76px);
+  font-size: clamp(40px, 5.4vw, 60px);
   font-weight: 600;
   line-height: 1.02;
   letter-spacing: -0.033em;
@@ -367,6 +626,11 @@ a:focus-visible {
   opacity: 0.85;
 }
 
+.page.dark .btnPrimary {
+  background: var(--yellow);
+  color: #141414;
+}
+
 .btnGhost:hover {
   text-decoration: underline;
   text-underline-offset: 4px;
@@ -374,8 +638,8 @@ a:focus-visible {
 
 .photo {
   flex-shrink: 0;
-  width: 300px;
-  height: 380px;
+  width: 260px;
+  height: 330px;
   object-fit: cover;
   object-position: 42% center;
   border-radius: 4px;
@@ -839,6 +1103,25 @@ a:focus-visible {
     grid-template-columns: 1fr;
   }
 
+  .featuredWork {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .routingHeader {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .purchaseLane {
+    grid-template-columns: 1fr;
+  }
+
+  .flowArrow {
+    transform: rotate(90deg);
+    justify-self: center;
+  }
+
   .skillSignal:nth-child(2) {
     border-top: 1px solid var(--line);
   }
@@ -909,6 +1192,63 @@ a:focus-visible {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+.page.dark {
+  --bg: #0d1220;
+  --ink: #f3f5fb;
+  --muted: #aeb9cc;
+  --line: #2a3550;
+  --yellow-soft: #342d16;
+  color-scheme: dark;
+}
+
+.page.dark .hero {
+  background-color: #151c2e;
+  background-image: radial-gradient(circle at 88% 22%, rgba(128, 102, 232, 0.28) 0 2px, transparent 3px), radial-gradient(circle at 72% 72%, rgba(242, 201, 76, 0.16) 0 2px, transparent 3px);
+}
+
+.page.dark .sectionHeader,
+.page.dark .tabs,
+.page.dark .facts,
+.page.dark .workList li,
+.page.dark .expList li {
+  border-color: #2a3550;
+}
+
+.page.dark .tabs {
+  background: rgba(13, 18, 32, 0.94);
+}
+
+.page.dark .featuredWork {
+  background: #151c2e;
+  border-color: #2a3550;
+}
+
+.page.dark .timelineCard {
+  background: #151c2e;
+  border-color: #2a3550;
+  color: var(--ink);
+}
+
+.page.dark .timelineHeader p,
+.page.dark .timelineCard .mono,
+.page.dark .timelineMilestone small {
+  color: #aeb9cc;
+}
+
+.page.dark .careerLineChart text {
+  fill: #f3f5fb;
+}
+
+.page.dark .careerLineChart circle {
+  stroke: #151c2e;
+}
+
+.page.dark .skillSignal p,
+.page.dark .featuredWork p,
+.page.dark .contact > p {
+  color: #aeb9cc;
 }
 
 @media (prefers-reduced-motion: reduce) {

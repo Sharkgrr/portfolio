@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ArrowDownRight, ArrowUpRight, BookOpen, Crosshair, Linkedin, Map, Rocket } from 'lucide-react'
+import { ArrowDownRight, ArrowUpRight, BookOpen, Crosshair, Linkedin, Map, Moon, Rocket, Sun } from 'lucide-react'
 import './styles.css'
 
 const EMAIL = 'raphaelaoliveira79@gmail.com'
@@ -24,7 +24,7 @@ const work = [
   {
     title: 'Supplier Data API',
     company: 'Blue Origin · Aerospace',
-    text: 'Built and maintained a supplier data API integrated with Databricks, centralizing procurement visibility for aerospace supply-chain systems.',
+    text: 'Implemented the Java API layer and Databricks integration that brought supplier data into one place, making procurement reviews easier to trace and reuse across aerospace supply-chain systems.',
     stack: 'Java · Databricks',
   },
   {
@@ -140,14 +140,23 @@ function RowList({ label, rows }) {
 
 function App() {
   const [activeTab, setActiveTab] = useState('overview')
+  const [darkMode, setDarkMode] = useState(false)
+
+  useEffect(() => {
+    document.body.classList.toggle('darkMode', darkMode)
+    return () => document.body.classList.remove('darkMode')
+  }, [darkMode])
 
   function openSection(id) {
     setActiveTab(id)
     window.setTimeout(() => document.getElementById(id === 'more' ? 'recognition' : id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0)
   }
 
+  const isSection = activeTab !== 'overview'
+  const pageClass = `page${isSection ? ' isSection' : ''}${darkMode ? ' dark' : ''}`
+
   return (
-    <div className="page">
+    <div className={pageClass}>
       <nav className="nav">
         <a className="brand" href="#top">
           Raphaela Oliveira
@@ -158,6 +167,9 @@ function App() {
               {link.label}
             </button>
           ))}
+          <button className="themeToggle" onClick={() => setDarkMode((value) => !value)} aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
+            {darkMode ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
           <a className="navCta" href={LINKEDIN} target="_blank" rel="noreferrer">
             LinkedIn ↗
           </a>
@@ -169,10 +181,10 @@ function App() {
           <Rocket className="heroRocket" aria-hidden="true" />
           <div className="heroCopy">
             <span className="status mono"><i aria-hidden="true" /> Aerospace systems · Florida, USA</span>
-            <h1>Software Development Engineer growing into the full stack.</h1>
+            <h1>Software engineer building APIs and the interfaces on top of them.</h1>
             <p>I build APIs, data platforms and, more and more, the interfaces on top of them — across aerospace at Blue Origin and banking at Itaú Unibanco.</p>
             <div className="actions">
-              <button className="btnPrimary" onClick={() => setActiveTab('work')}>View selected work <ArrowDownRight size={16} /></button>
+              <button className="btnPrimary" onClick={() => openSection('work')}>View selected work <ArrowDownRight size={16} /></button>
               <a className="btnGhost" href={LINKEDIN} target="_blank" rel="noreferrer"><Linkedin size={16} /> LinkedIn</a>
             </div>
           </div>
@@ -190,6 +202,7 @@ function App() {
         {activeTab === 'overview' && <section className="overviewPanel" aria-label="Overview">
           <div className="overviewIntro"><span className="mono">01 · TOOLKIT</span><h2>Skills with a point of view.</h2><p>A practical toolkit shaped by systems, delivery and product thinking.</p></div>
           <div className="skillSignals">{skills.map((group, index) => <div className="skillSignal" key={group.title}><span className="mono">{String(index + 1).padStart(2, '0')}</span><div><h3>{group.title}</h3><p>{group.items.join(' · ')}</p></div></div>)}</div>
+          <article className="featuredWork"><div><span className="mono">FEATURED PROJECT · 01</span><h3>Supplier Data API</h3><p>Implemented the Java API layer and Databricks integration that brought supplier data into one place, making procurement reviews easier to trace and reuse across aerospace supply-chain systems.</p></div><span className="mono">Java · Databricks</span></article>
         </section>}
 
         {activeTab === 'work' && <Section id="work" index="01" title="Mission log"><ol className="workList">{work.map((item, i) => <li key={item.title}><span className="mono num">{String(i + 1).padStart(2, '0')}</span><div className="workTitle"><h3>{item.title}</h3><span>{item.company}</span></div><div className="workBody"><p>{item.text}</p><span className="mono stack">{item.stack}</span></div></li>)}</ol></Section>}
