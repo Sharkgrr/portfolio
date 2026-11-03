@@ -3,9 +3,9 @@
   --ink: #141414;
   --muted: #6b6b66;
   --line: #e6e4df;
-  --accent: #d69e00;
-  --yellow: #f2c94c;
-  --yellow-soft: #fff7d6;
+  --accent: #d97706;
+  --yellow: #f59e0b;
+  --yellow-soft: #fff3d6;
   --sans: 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
   --max: 1040px;
@@ -172,8 +172,9 @@ body.darkMode::selection {
   z-index: 20;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  padding: 20px 0 0;
+  gap: 16px;
+  padding: 20px 0 16px;
+  margin-bottom: 16px;
   border-top: 1px solid #dfe6f5;
   background: rgba(250, 250, 248, 0.94);
   backdrop-filter: blur(12px);
@@ -295,173 +296,6 @@ body.darkMode::selection {
   white-space: nowrap;
 }
 
-.routingDemo {
-  grid-column: 1 / -1;
-  padding: 24px;
-  background: #141b2d;
-  border-radius: 12px;
-  color: #fff;
-}
-
-.routingHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 24px;
-  margin-bottom: 22px;
-}
-
-.routingHeader h3 {
-  margin: 8px 0 6px;
-  font-size: 24px;
-  font-weight: 500;
-}
-
-.routingHeader p {
-  color: #c6cede;
-  font-size: 14px;
-}
-
-.routingDemo .mono,
-.purchaseHead {
-  color: #9da9c2;
-}
-
-.routingStatus {
-  padding: 6px 10px;
-  border: 1px solid #52617d;
-  border-radius: 999px;
-  color: #8ee0bd;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-}
-
-.routingFlow {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.purchaseLane {
-  display: grid;
-  grid-template-columns: 1fr 28px 1fr 28px 1fr;
-  gap: 10px;
-  align-items: stretch;
-}
-
-.purchaseNode {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 0;
-  padding: 14px;
-  border: 1px solid #33405b;
-  border-radius: 8px;
-  background: #1c263c;
-}
-
-.purchaseNode strong {
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.purchaseNode small {
-  color: #aeb9cc;
-  font-size: 12px;
-}
-
-.orderNode {
-  border-color: #52617d;
-}
-
-.ruleNode {
-  background: #222d45;
-}
-
-.ownerNode {
-  background: #203c3d;
-  border-color: #3f7067;
-}
-
-.ownerNode strong {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #8ee0bd;
-}
-
-.ownerNode i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #8ee0bd;
-}
-
-.flowArrow {
-  align-self: center;
-  color: #8ee0bd;
-  font-size: 22px;
-}
-
-.purchaseTable {
-  overflow-x: auto;
-}
-
-.purchaseTableInner {
-  min-width: 720px;
-}
-
-.purchaseRow {
-  display: grid;
-  grid-template-columns: 90px 1.2fr 1fr 90px 1.1fr;
-  gap: 16px;
-  align-items: center;
-  padding: 14px 0;
-  border-top: 1px solid #2d3850;
-  font-size: 13px;
-}
-
-.purchaseHead {
-  padding: 0 0 10px;
-  border-top: 0;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.06em;
-}
-
-.priority {
-  justify-self: start;
-  padding: 4px 8px;
-  border-radius: 999px;
-  font-family: var(--mono);
-  font-size: 10px;
-}
-
-.priority.high {
-  background: #5d3c5a;
-  color: #ffc2d5;
-}
-
-.priority.normal {
-  background: #30415a;
-  color: #b8c8e8;
-}
-
-.owner {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.owner i {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #8ee0bd;
-}
-
 .metricTop {
   display: flex;
   justify-content: space-between;
@@ -517,6 +351,7 @@ body.darkMode::selection {
   font-size: 24px;
   line-height: 1.1;
   letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
 }
 
 .hero {
@@ -1108,20 +943,6 @@ body.darkMode::selection {
     gap: 16px;
   }
 
-  .routingHeader {
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .purchaseLane {
-    grid-template-columns: 1fr;
-  }
-
-  .flowArrow {
-    transform: rotate(90deg);
-    justify-self: center;
-  }
-
   .skillSignal:nth-child(2) {
     border-top: 1px solid var(--line);
   }
@@ -1199,7 +1020,8 @@ body.darkMode::selection {
   --ink: #f3f5fb;
   --muted: #aeb9cc;
   --line: #2a3550;
-  --yellow-soft: #342d16;
+  --yellow-soft: #3a2412;
+  --accent: #f59e0b;
   color-scheme: dark;
 }
 
@@ -1223,6 +1045,11 @@ body.darkMode::selection {
 .page.dark .featuredWork {
   background: #151c2e;
   border-color: #2a3550;
+}
+
+.page.dark .featuredWork > .mono:last-child,
+.page.dark .sectionHeader .mono {
+  color: var(--yellow);
 }
 
 .page.dark .timelineCard {
