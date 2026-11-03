@@ -327,7 +327,9 @@ body.darkMode::selection {
 .buyerFeature { align-items: center; border-left: 4px solid var(--yellow); }
 .buyerFeature h2 { font-size: 32px; margin: 12px 0; }
 .caseLink { display: inline-block; margin-top: 16px; color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 5px; }
+/* Programmatic route focus must not outline the entire content panel. */
 #content-panel { scroll-margin-top: 150px; }
+#content-panel:focus { outline: none; }
 .caseStudy { max-width: 850px; }
 .caseStudy h1 { font-size: clamp(30px, 5vw, 48px); line-height: 1.15; margin: 16px 0; }
 .caseStudy p { color: var(--muted); max-width: 70ch; }
