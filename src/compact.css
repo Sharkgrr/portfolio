@@ -1,0 +1,138 @@
+/* Dense portfolio: implementation is the source for canvas imports. */
+:root { --bg:#eef1f5; --ink:#172333; --muted:#5e6d7e; --line:#d5dde7; --accent:#345de0; --yellow:#345de0; --max:1320px; --gutter:28px; }
+body { background:var(--bg); }
+.page { background:transparent; }
+.nav { padding:18px 0 12px; }
+.brand { font-size:19px; letter-spacing:-.04em; }
+.navLinks { gap:14px; }
+.navLinks .navCta { background:var(--ink); color:var(--bg); border:0; border-radius:5px; }
+.tabs { padding:0; margin:0 0 18px; gap:28px; border:0; border-bottom:1px solid var(--line); background:var(--bg); }
+.tab { padding:12px 0; border:0; border-bottom:2px solid transparent; border-radius:0; font-size:13px; }
+.tab:hover,.tab.active { background:transparent; color:var(--accent); border-color:var(--accent); }
+.portfolioLayout { display:grid; grid-template-columns:292px minmax(0,1fr); gap:22px; align-items:start; }
+.profileRail { background:#17263a; color:#f4f7ff; border-radius:10px; padding:22px; }
+.hero,.isSection .hero { display:flex; flex-direction:column; align-items:stretch; padding:0; gap:19px; background:transparent; border-radius:0; overflow:visible; }
+.hero::after { display:none; }
+.portrait { order:-1; display:flex; flex-direction:column; gap:8px; }
+.photo,.isSection .photo { display:block; width:100%; height:194px; object-fit:cover; object-position:42% 43%; border-radius:6px; filter:saturate(.75); }
+.portrait .mono { color:#a7b8cf; font-size:9px; }
+.heroCopy { gap:15px; }
+.status,.isSection .status { display:flex; align-items:start; color:#b8c8df; font-size:9px; line-height:1.7; gap:7px; }
+.status i { background:#8aabff; width:6px; height:6px; margin-top:5px; }
+.hero h1,.isSection .hero h1 { font-size:31px; line-height:1.08; letter-spacing:-.045em; white-space:pre-line; }
+.hero p,.isSection .heroCopy p { display:block; font-size:13px; color:#b8c8df; line-height:1.65; }
+.actions,.isSection .actions { display:flex; flex-wrap:wrap; gap:5px; padding:0; }
+.btnPrimary,.btnGhost { padding:10px 12px; border-radius:5px; font:500 12px var(--sans); min-height:40px; }
+.profileRail .btnPrimary { width:100%; justify-content:space-between; background:#a8c0ff; color:#13223b; }
+.profileRail .btnGhost { font-size:11px; padding:8px 5px; }
+.facts,.isSection .facts { display:grid; grid-template-columns:1fr 1fr; gap:16px 8px; padding:18px 0; margin-top:16px; border-color:#34455c; }
+.facts div { gap:5px; }
+.facts dt { color:#99abc3; font-size:9px; text-transform:uppercase; letter-spacing:.06em; }
+.facts dd { font-size:11px; }
+.personalNote { padding-top:16px; }
+.personalNote .mono { color:#99abc3; font-size:9px; }
+.personalNote p { font-size:12px; margin:5px 0; }
+.personalNote a { color:#b5c9ee; font-size:11px; }
+.overviewPanel { display:flex; flex-direction:column; gap:16px; padding:0; }
+.workHeading { display:flex; align-items:end; justify-content:space-between; width:100%; padding:1px 0 3px; }
+.workHeading .mono { font-size:9px; letter-spacing:.08em; }
+.workHeading h2 { font-size:30px; letter-spacing:-.045em; line-height:1.2; margin-top:4px; }
+.workHeading > a { display:flex; align-items:center; gap:5px; font-size:12px; }
+.projectGrid { display:grid; grid-template-columns:1.15fr 1fr; gap:14px; width:100%; }
+.featuredWork { grid-column:auto; padding:22px; background:#fff; border:1px solid var(--line); border-radius:8px; min-height:244px; }
+.featuredWork > div { display:flex; flex-direction:column; width:100%; }
+.projectMeta { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.projectMeta .mono { font-size:9px; letter-spacing:.04em; }
+.projectTag { font-size:9px; padding:3px 6px; border:1px solid var(--line); border-radius:4px; }
+.featuredWork h3 { font-size:26px; line-height:1.12; letter-spacing:-.035em; margin:24px 0 10px; font-weight:600; }
+.featuredWork p { font-size:13px; line-height:1.6; }
+.featuredWork .caseLink { display:flex; align-items:center; gap:6px; margin-top:auto; padding-top:20px; text-decoration:none; font-size:12px; }
+.projectPrimary { background:#345de0; color:#fff; border-color:#345de0; }
+.projectPrimary .mono,.projectPrimary p { color:#e1e9ff; }
+.projectPrimary .caseLink { color:#fff; }
+.projectPrimary .projectTag { border-color:#7995ec; }
+.overviewDetails { display:grid; grid-template-columns:1.15fr 1fr; gap:14px; width:100%; }
+.careerSummary,.toolkitSummary { padding:20px; background:#fff; border:1px solid var(--line); border-radius:8px; }
+.denseHeading { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:6px; }
+.denseHeading h2 { font-size:18px; letter-spacing:-.025em; }
+.denseHeading a { font-size:10px; color:var(--muted); }
+.careerRow { display:flex; align-items:center; gap:12px; padding:16px 0; border-bottom:1px solid var(--line); }
+.companyMark { display:flex; align-items:center; justify-content:center; width:36px; height:36px; flex-shrink:0; background:#eaf0fc; color:#345de0; border-radius:6px; font-size:12px; font-weight:600; }
+.careerRow > div { flex:1; }
+.careerRow h3 { font-size:14px; font-weight:600; }
+.careerRow p,.careerRow small { font-size:11px; color:var(--muted); }
+.careerRow > svg { color:var(--muted); }
+.educationLine { padding-top:14px; }
+.educationLine .mono { font-size:9px; }
+.educationLine p { font-size:12px; margin-top:4px; }
+.educationLine small { color:var(--muted); font-size:10px; }
+.toolkitRow { padding:12px 0; border-bottom:1px solid var(--line); }
+.toolkitRow:last-child { padding-bottom:0; border:0; }
+.toolkitRow h3 { font-size:12px; font-weight:600; margin-bottom:4px; }
+.toolkitRow p { font-size:11px; line-height:1.65; color:var(--muted); }
+.recognitionStrip { display:flex; align-items:center; gap:14px; width:100%; padding:17px 20px; background:#dfe7f6; border:1px solid #cbd8ef; border-radius:7px; }
+.awardGlyph { font-size:26px; color:#345de0; }
+.recognitionStrip > div { flex:1; }
+.recognitionStrip .mono { font-size:8px; letter-spacing:.07em; }
+.recognitionStrip p { font-size:13px; font-weight:600; }
+.recognitionStrip p span { color:var(--muted); font-weight:400; }
+.recognitionStrip > span:last-child { font-size:10px; }
+.contact { padding:16px 0; gap:13px; }
+.contactLine { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.contactLine p { font-size:12px; color:var(--muted); }
+.email { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:500; letter-spacing:0; }
+.footerBottom { padding-top:12px; font-size:10px; }
+.section { padding-top:0; gap:18px; background:none; }
+.sectionHeader h2 { font-size:28px; }
+.workList li { grid-template-columns:24px 1fr; gap:16px; padding:22px 0; }
+.workBody { grid-column:2; }
+.expList li { grid-template-columns:1fr; gap:6px; }
+.skillGrid { grid-template-columns:1fr 1fr; gap:24px; }
+.twoCols { gap:24px; }
+.about { gap:24px; flex-direction:column; }
+.about p { font-size:18px; }
+.timelineCard { background:#e5ecfa; border-color:var(--line); padding:20px; }
+.page.dark { --bg:#111821; --ink:#edf2fb; --muted:#aab8cb; --line:#344154; --accent:#9ab6ff; }
+body.darkMode { background:#111821; }
+.page.dark .tabs { background:var(--bg); }
+.page.dark .hero { background:transparent; }
+.page.dark .featuredWork,.page.dark .careerSummary,.page.dark .toolkitSummary { background:#1d2939; border-color:var(--line); }
+.page.dark .projectPrimary { background:#345de0; }
+.page.dark .recognitionStrip { background:#24344f; border-color:#344b70; }
+.page.dark .projectPrimary p,.page.dark .projectPrimary .mono { color:#e1e9ff; }
+@media(min-width:1600px) { .page { padding-top:14px; } }
+@media(max-width:1050px) { .portfolioLayout { grid-template-columns:250px minmax(0,1fr); gap:16px; } .profileRail { padding:18px; } .projectGrid,.overviewDetails { grid-template-columns:1fr; } .featuredWork { min-height:210px; } .hero h1,.isSection .hero h1 { font-size:28px; } }
+@media(max-width:720px) {
+ :root { --gutter:16px; }
+ .nav { padding:10px 0; gap:8px; } .brand { font-size:17px; } .navLinks { gap:7px; } .navLinks .navCta { font-size:11px; padding:7px 9px; }
+ .tabs { padding:8px 0; margin-bottom:12px; } .mobileMenu select { min-height:44px; }
+ .portfolioLayout { grid-template-columns:1fr; gap:18px; }
+ .profileRail { padding:18px; } .hero,.isSection .hero { gap:15px; }
+ .portrait { flex-direction:row; align-items:center; gap:12px; } .photo,.isSection .photo { width:64px; height:64px; aspect-ratio:1; }
+ .hero h1,.isSection .hero h1 { font-size:32px; white-space:normal; } .heroCopy { gap:12px; }
+ .profileRail .btnPrimary { width:auto; gap:12px; } .btnPrimary,.btnGhost { min-height:44px; }
+ .facts,.isSection .facts { margin-top:10px; padding:14px 0; gap:12px; }
+ .personalNote { padding-top:10px; } .workHeading h2 { font-size:25px; }
+ .projectGrid,.overviewDetails { grid-template-columns:1fr; } .featuredWork { min-height:220px; padding:20px; }
+ .recognitionStrip { flex-wrap:wrap; gap:10px; padding:16px; } .recognitionStrip > span:last-child { padding-left:30px; }
+ .contactLine { align-items:start; flex-direction:column; gap:10px; } .footerBottom { gap:5px; }
+ .twoCols,.skillGrid { grid-template-columns:1fr; }
+ .isSection .profileRail { display:none; }
+}
+
+.roleFit { width: 100%; padding: clamp(18px, 3vw, 32px); border: 1px solid var(--line); border-radius: 16px; color: var(--ink); }
+.roleFit h2 { margin: 0 0 18px; line-height: 1.12; font-size: clamp(24px, 3vw, 36px); letter-spacing: -.04em; }
+.roleFit fieldset { padding: 0; margin: 0; min-width: 0; border: 0; }
+.roleFit legend { font-weight: 600; }
+.roleFit #fit-help { color: var(--muted); margin: 4px 0 12px; font-size: 14px; }
+.fitOptions, .fitLinks { display: flex; flex-wrap: wrap; gap: 8px; }
+.fitOptions label { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; font-size: 14px; }
+.fitOptions label:has(:checked) { border-color: currentColor; font-weight: 600; }
+.fitOptions label:has(:disabled) { color: var(--muted); cursor: default; }
+.fitOptions input { accent-color: var(--ink); }
+.fitAnswer { border-top: 1px solid var(--line); margin-top: 20px; padding-top: 18px; }
+.fitAnswer h3 { margin: 5px 0; font-size: 19px; }
+.fitAnswer h4 { margin: 12px 0 4px; font-size: 14px; }
+.fitAnswer p { max-width: 66ch; line-height: 1.5; }
+.fitLinks { margin-top: 18px; gap: 16px; }
+.fitLinks a { text-decoration: underline; text-underline-offset: 3px; }

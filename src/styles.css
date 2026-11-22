@@ -324,28 +324,77 @@ body.darkMode::selection {
   border-radius: inherit;
 }
 
-.buyerFeature { align-items: center; border-left: 4px solid var(--yellow); }
-.buyerFeature h2 { font-size: 32px; margin: 12px 0; }
 .caseLink { display: inline-block; margin-top: 16px; color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 5px; }
 /* Programmatic route focus must not outline the entire content panel. */
 #content-panel { scroll-margin-top: 150px; }
 #content-panel:focus { outline: none; }
 .caseStudy { max-width: 850px; }
-.caseStudy h1 { font-size: clamp(30px, 5vw, 48px); line-height: 1.15; margin: 16px 0; }
 .caseStudy p { color: var(--muted); max-width: 70ch; }
+.caseStudy > header h2 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.05;
+  margin-block: 0.3em;
+}
+
+.readingListControls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+  gap: 16px;
+}
+
+.readingListControls label {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.readingListControls input,
+.readingListControls select {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--muted);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+}
+
+.dark .readingListControls select {
+  color-scheme: dark;
+}
+
+.readingListTable {
+  overflow-x: auto;
+}
+.experimentActions { display: flex; flex-wrap: wrap; gap: 10px; margin-block: 18px; }
+.experimentActions [aria-pressed="true"] { box-shadow: inset 0 -3px var(--ink); }
+.readingList caption { text-align: left; padding-block: 12px; font-weight: 600; }
+.readingList details { margin-block: 24px; }
+.readingList summary { cursor: pointer; }
+
+.readingListTable table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.readingListTable th,
+.readingListTable td {
+  padding: 12px clamp(5px, 1.5vw, 16px);
+  border-bottom: 1px solid var(--line);
+}
+
+.readingListTable thead th {
+  border-bottom-color: var(--muted);
+}
+
+.readingListTable td:last-child {
+  font-variant-numeric: tabular-nums;
+}
 .caseSection { display: flex; gap: 24px; padding: 24px 0; border-top: 1px solid var(--line); }
-.caseSection h2 { font-size: 24px; margin-bottom: 12px; }
-.portalArchitecture { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-.portalShell, .portalBalancer, .portalRoute { padding: 24px; }
-.portalShell { border-top: 4px solid var(--yellow); }
-.portalBalancer { background: var(--line); }
-.portalRoute { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; border-top: 1px solid var(--line); }
-.portalRoute code { display: inline-block; color: var(--accent); margin: 8px 0; overflow-wrap: anywhere; }
-.portalArchitecture h2 { font-size: 24px; }
-.portalArchitecture h3 { font-size: 20px; }
-@media (max-width: 720px) { .portalRoute { grid-template-columns: 1fr; } }
-.caseStudy summary { cursor: pointer; font-weight: 600; padding: 16px 0; }
-.caseStudy pre { overflow-x: auto; padding: 24px; background: var(--line); border-radius: 8px; font-size: 13px; }
+.caseSection h3 { margin-bottom: 12px; }
 a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--yellow); outline-offset: 4px; }
 @media (max-width: 720px) { .tabs { gap: 8px; } .caseSection { gap: 12px; } }
 
@@ -1032,12 +1081,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .sectionHeader { gap: 16px; }
   .featuredWork > .mono:last-child { white-space: normal; }
   .featuredWork, .timelineCard, .metricsGrid { padding: 20px; }
-  .buyerFeature { align-items: stretch; }
   .careerLineChart { display: none; }
   .footerBottom div { flex-wrap: wrap; gap: 12px 24px; }
   .footerBottom a { min-height: 44px; }
-  .caseSection > .mono { flex-shrink: 0; }
-  .caseStudy pre { max-width: 100%; }
 
   .hero {
     flex-direction: column-reverse;
