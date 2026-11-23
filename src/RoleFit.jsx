@@ -1,41 +1,61 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { ArrowUp, RotateCcw, MessageCircle } from 'lucide-react'
-import { topics, replyFor } from './roleFitKnowledge'
+import React, { useEffect, useRef } from 'react'
+import { Compass, Square } from 'lucide-react'
+import {
+  ThreadPrimitive, ComposerPrimitive, MessagePrimitive,
+  useAui, useAuiState,
+  AssistantRuntimeProvider, useLocalRuntime,
+} from '@assistant-ui/react'
+import { portfolioChatAdapter } from './chatAdapter'
 
-export default function RoleFit({ priorities: messages, setPriorities: setMessages, resumeUrl }) {
-  const [draft, setDraft] = useState('')
-  const latest = useRef(null)
-  const input = useRef(null)
-  useEffect(() => { if (messages.length) latest.current?.scrollIntoView({ behavior: 'instant', block: 'nearest' }) }, [messages.length])
-  function send(value) {
-    const text = value.trim().slice(0, 1000)
-    if (!text) return
-    setMessages(current => [...current, text])
-    setDraft('')
-    input.current?.focus({ preventScroll: true })
-  }
+function GuideMessage() {
+  const isUser = useAuiState(state => state.message.role === 'user')
   return (
-    <section className={`chatExperience ${messages.length ? 'hasMessages' : ''}`} aria-labelledby="fit-heading">
-      <div className="chatIntro">
+    <MessagePrimitive.Root className={`guideMessage ${isUser ? 'visitorMessage' : 'noteMessage'}`}>
+      <span className="eyebrow">{isUser ? 'Your question' : 'Portfolio guide'}</span>
+      <div className="messageText"><MessagePrimitive.Content /></div>
+      <MessagePrimitive.Error><p role="alert">This response was interrupted. Please try your question again.</p></MessagePrimitive.Error>
+    </MessagePrimitive.Root>
+  )
+}
 
-        <h1 id="fit-heading">What could we build together?</h1>
-        <p>Explore my experience, one question at a time.</p>
-      </div>
-      {!messages.length && <div className="starterSection"><div className="starterGrid">{topics.map((topic, index) => <button key={topic.label} onClick={() => send(topic.label)}>{['APIs & backend', 'React interfaces', 'Deployments', 'Production support'][index]}</button>)}</div></div>}
-      <div className="chatMessages" role="log" aria-label="Role fit conversation" aria-live="polite" aria-relevant="additions">
-        {messages.map((message, index) => { const reply = replyFor(message); return <div className="chatTurn" key={`${index}-${message}`} ref={index === messages.length - 1 ? latest : undefined}>
-          <div className="userMessage"><span className="srOnly">You: </span>{message}</div>
-          <div className="assistantMessage"><span className="assistantAvatar"><MessageCircle size={17} /></span><div><div className="replyHeading">Portfolio guide <span>Curated answer</span></div>{reply.matches.map(answer => <article className="answerBlock" key={answer.label}><span className="answerSource">{answer.source}</span><h2>{answer.label}</h2><p>{answer.experience}</p><div className="interviewPrompt"><strong>A question to take into an interview</strong><p>{answer.question}</p></div></article>)}{reply.fallback && <p>{reply.fallback}</p>}<div className="replyLinks"><a href="#experience">View experience ↗</a>{resumeUrl && <a href={resumeUrl} download="Raphaela-Oliveira-Resume.pdf">Résumé ↓</a>}<a href="https://www.linkedin.com/in/raphaelaoliveirajava" target="_blank" rel="noreferrer">Let’s talk ↗</a></div></div></div>
-        </div> })}
-      </div>
-      <div className="composerArea">{messages.length > 0 && <button className="restartChat" onClick={() => { setMessages([]); setDraft(''); input.current?.focus() }}><RotateCcw size={13} /> Start a new conversation</button>}
-        <form className="chatComposer" onSubmit={event => { event.preventDefault(); send(draft) }}>
-          <label className="srOnly" htmlFor="chat-question">Ask about Raphaela’s experience</label>
-          <textarea ref={input} id="chat-question" rows={2} maxLength={1000} value={draft} onChange={event => setDraft(event.target.value)} placeholder="What would you like to know?" onKeyDown={event => { if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); send(draft) } }} />
-          <div className="composerBottom"><button type="submit" disabled={!draft.trim()} aria-label="Send message"><ArrowUp size={19} /></button></div>
-        </form>
-        <p className="chatDisclosure">Curated answers, not AI. Your messages stay in this browser.</p>
-      </div>
+function Guide({ question }) {
+  const aui = useAui()
+  const thread = aui.thread()
+  const isRunning = useAuiState(state => state.thread.isRunning)
+  const isEmpty = useAuiState(state => state.thread.isEmpty)
+  const lastQuestion = useRef(null)
+  useEffect(() => {
+    if (!question || lastQuestion.current === question.id) return
+    lastQuestion.current = question.id
+    aui.thread().cancelRun()
+    aui.thread().append({ role: 'user', content: [{ type: 'text', text: question.text }] })
+  }, [aui, question])
+  return (
+    <section className="guidePage" aria-labelledby="guide-title">
+      <div className="pageHeading"><span className="eyebrow"><Compass size={16} /> A conversation with context</span><h1 id="guide-title">Follow your curiosity.</h1><p>Ask about my work, a technical challenge or where my experience connects with yours.</p></div>
+      <ThreadPrimitive.Root className="guideThread">
+        {isEmpty && <div className="guideStarters">{[
+          'How do you move spreadsheet-based work into a React interface?',
+          'How does your Java and Kotlin experience connect to API design?',
+          'What would you investigate when an API starts timing out?',
+        ].map(prompt => <button className="textChoice" key={prompt} onClick={() => thread.append({ role: 'user', content: [{ type: 'text', text: prompt }] })}>{prompt}</button>)}</div>}
+        <div className="guideMessages" role="log" aria-label="Conversation with the portfolio guide" aria-live="polite">
+          <ThreadPrimitive.Messages components={{ UserMessage: GuideMessage, AssistantMessage: GuideMessage }} />
+        </div>
+        {isRunning && <p className="guideStatus" role="status">Connecting your question to my work…</p>}
+        <ComposerPrimitive.Root className="guideComposer">
+          <label className="eyebrow" htmlFor="guide-question">What would you like to explore?</label>
+          <ComposerPrimitive.Input id="guide-question" placeholder="Ask a question about my work…" rows={3} maxLength={1000} submitOnEnter />
+          <div className="composerActions"><span>Enter to send · Shift + Enter for a new line</span>{isRunning ? <ComposerPrimitive.Cancel className="button secondary"><Square size={14} /> Stop</ComposerPrimitive.Cancel> : <ComposerPrimitive.Send className="button primary">Ask the guide</ComposerPrimitive.Send>}</div>
+        </ComposerPrimitive.Root>
+        {!isEmpty && <button className="plainButton" onClick={() => { thread.cancelRun(); thread.reset() }}>Start a new conversation</button>}
+      </ThreadPrimitive.Root>
+      <p className="smallPrint">AI guide powered by Mastra. Responses may contain mistakes. Questions are sent to the AI provider. Curated notes are available when the guide is offline.</p>
     </section>
   )
+}
+
+export default function RoleFit({ question }) {
+  const runtime = useLocalRuntime(portfolioChatAdapter)
+  return <AssistantRuntimeProvider runtime={runtime}><Guide question={question} /></AssistantRuntimeProvider>
 }

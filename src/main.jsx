@@ -1,252 +1,176 @@
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, lazy, useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ArrowDownRight, ArrowUpRight, BookOpen, Crosshair, Download, Linkedin, Map, Moon, Sun, MessageCircle, Plus, BriefcaseBusiness, Wrench, Award, PanelLeftClose, Menu, X } from 'lucide-react'
-import './styles.css'
-import './compact.css'
-import './chat.css'
-import './chat-clean.css'
-import RoleFit from './RoleFit'
+import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Award, BookOpen, Cloud, CodeXml, Compass, Download, Gamepad2, GitBranch, GraduationCap, House, Layers, Medal, Network, Orbit, PanelsTopLeft, Rocket, Server, ShieldCheck, Sprout, UserRound } from 'lucide-react'
+import { workNotes, challenges, toolkit } from './portfolioContent'
+import './portfolio.css'
 
+const RoleFit = lazy(() => import('./RoleFit'))
 const LINKEDIN_URL = 'https://www.linkedin.com/in/raphaelaoliveirajava'
-const THEME_STORAGE_KEY = 'portfolio-theme'
-const CURRENT_YEAR = new Date().getFullYear()
-const DEFAULT_TAB = 'overview'
-const [resumeUrl] = Object.values(import.meta.glob('./assets/resume.pdf', { eager: true, query: '?url', import: 'default' }))
-
+const resumeUrl = new URL('./assets/resume.pdf', import.meta.url).href
+const portraitUrl = `${import.meta.env.BASE_URL}raphaela-dev.jpg`
+const sections = [
+  { id: 'overview', label: 'Overview', icon: House },
+  { id: 'work', label: 'Work', icon: CodeXml },
+  { id: 'about', label: 'About', icon: UserRound },
+  { id: 'recognition', label: 'Recognition', icon: Award },
+  { id: 'learning', label: 'Learning', icon: BookOpen },
+]
+const aliases = { experience: 'work', more: 'about' }
 function readRoute() {
-  const route = window.location.hash.slice(1)
-  return TAB_OPTIONS.some(tab => tab.id === route) ? route : DEFAULT_TAB
+  const hash = window.location.hash.slice(1)
+  const route = aliases[hash] || hash
+  return [...sections.map(section => section.id), 'role-fit', 'challenge', 'skills'].includes(route) ? route : 'overview'
 }
-
-const TAB_OPTIONS = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'role-fit', label: 'Role fit' },
-  { id: 'experience', label: 'Experience' },
-  { id: 'skills', label: 'Toolkit' },
-  { id: 'more', label: 'More' },
-]
-
-const HERO = {
-  status: 'Software engineering · Florida, USA',
-  title: 'Backend depth.\nFull-stack perspective.',
-  description: 'I’m Raphaela, a software engineer with 5+ years building APIs and product interfaces. From banking at Itaú to aerospace at Blue Origin.',
-  image: `${import.meta.env.BASE_URL}raphaela-dev.jpg`,
+function LinkedIn({ children, className }) {
+  return <a className={className} href={LINKEDIN_URL} target="_blank" rel="noreferrer">{children}</a>
 }
-
-const FACTS = [
-  { label: 'Now', value: 'Blue Origin' },
-  { label: 'Focus', value: 'Backend · Full stack' },
-  { label: 'Strongest at', value: 'Java · Kotlin · APIs' },
-  { label: 'Languages', value: 'EN · PT' },
-]
-
-const EXPERIENCE_ITEMS = [
-  { period: 'Aug 2025 — Now', company: 'Blue Origin', role: 'Software Engineer I', text: 'Build APIs and product interfaces, with a focus on making data easier to work with.' },
-  { period: 'Mar 2020 — Feb 2025', company: 'Itaú Unibanco', role: 'Software Engineer', text: 'Built a strong backend foundation through APIs, automation and banking features — from requirements to delivery and production support.' },
-  { period: '2019 — 2022', company: 'Universidade São Judas Tadeu', role: 'B.S. Computer Science', text: 'Plus additional studies in English and an ongoing Theology degree.' },
-]
-
-const SKILL_GROUPS = [
-  { title: 'Backend', items: ['Java', 'Kotlin', 'REST APIs', 'Spring Boot'] },
-  { title: 'Frontend', items: ['React', 'Vite', 'Product UI'] },
-  { title: 'Data & Cloud', items: ['SQL', 'Databricks', 'AWS', 'Terraform'] },
-  { title: 'Quality & Ops', items: ['Postman · Insomnia', 'CloudWatch · Datadog · Splunk', 'CI/CD', 'Automated tests'] },
-]
-
-const CAREER_MILESTONES = [
-  { year: '2020', company: 'Itaú Unibanco', detail: 'Software Engineer Internship', tone: 'yellow', label: 'Intern' },
-  { year: '2021', company: 'Itaú Unibanco', detail: 'Junior Software Engineer', tone: 'purple', label: 'Junior' },
-  { year: '2024', company: 'Itaú Unibanco', detail: 'Mid-Level Software Engineer', tone: 'purple', label: 'Mid-Level' },
-  { year: '2025', company: 'Blue Origin', detail: 'Software Engineer I', tone: 'yellow', label: 'Blue Origin' },
-]
-
-const AWARDS = [
-  { title: 'GenAI Hackathon Award', text: 'Recognized for a document processing prototype.', meta: 'Blue Origin' },
-  { title: 'Merit Bonus', text: 'Delivered an auto insurance service that simplified simulation flows.', meta: 'Itaú' },
-  { title: 'Highlight Project EXPO', text: 'Recognized for project impact and delivery quality.', meta: 'College' },
-]
-
-const CERTIFICATIONS = [
-  { title: 'Site Reliability Engineering', text: 'Training', meta: '2024' },
-  { title: 'Lifelong Learning', text: 'Certiprof', meta: '2020' },
-  { title: 'Introduction to IoT', text: 'Cisco', meta: '2021' },
-  { title: 'Cloud Foundation', text: 'AWS Academy', meta: '2021' },
-  { title: 'Getting Started with Serverless', text: 'AWS', meta: '2023' },
-  { title: 'Ethical Web Hacking', text: '42 São Paulo', meta: '2024' },
-]
-
-const INTERESTS = [
-  { icon: Crosshair, label: 'FPS games' },
-  { icon: BookOpen, label: 'Manga' },
-  { icon: Map, label: 'Travel' },
-]
-
-const PANEL_COMPONENTS = {
-  overview: RoleFit,
-  'role-fit': RoleFit,
-  experience: ExperiencePanel,
-  skills: SkillsPanel,
-  more: MorePanel,
+function Eyebrow({ children, className = '' }) {
+  return <span className={`eyebrow ${className}`}>{children}</span>
 }
-
-function Section({ id, index, title, children }) {
-  return (
-    <section id={id} className="section">
-      <header className="sectionHeader">
-        <h2>{title}</h2>
-        <span className="mono">{index}</span>
-      </header>
-      {children}
-    </section>
-  )
-}
-
-function ExternalLink({ href = LINKEDIN_URL, className, children }) {
-  return <a className={className} href={href} target="_blank" rel="noreferrer">{children}</a>
-}
-
-function Hero({ onNavigate }) {
-  return (
-    <section id="top" className="hero">
-
-      <div className="heroCopy">
-        <span className="status mono"><i aria-hidden="true" /> {HERO.status}</span>
-        <h1>{HERO.title}</h1>
-        <p>{HERO.description}</p>
-        <div className="actions">
-          <button className="btnPrimary" onClick={() => onNavigate('role-fit')}>Explore role fit <ArrowDownRight size={16} /></button>
-          <ExternalLink className="btnGhost"><Linkedin size={16} /> LinkedIn</ExternalLink>
-          {resumeUrl && <a className="btnGhost" href={resumeUrl} download="Raphaela-Oliveira-Resume.pdf"><Download size={16} /> Download résumé</a>}
-        </div>
-      </div>
-      <div className="portrait"><img className="photo" src={HERO.image} alt="Raphaela Oliveira wearing a cap and hoodie while traveling" /><span className="mono">Engineer. Always curious.</span></div>
-    </section>
-  )
-}
-
-function Facts() {
-  return <dl className="facts">{FACTS.map((fact) => <div key={fact.label}><dt className="mono">{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>
-}
-
-function Navigation({ activeTab, darkMode, onNavigate, onToggleTheme }) {
-  return (
-    <>
-      <nav className="nav">
-        <a className="brand" href="#overview">Raphaela Oliveira</a>
-        <div className="navLinks">
-          <button className="themeToggle" onClick={onToggleTheme} aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>{darkMode ? <Sun size={16} /> : <Moon size={16} />}</button>
-          <ExternalLink className="navCta">Let's connect ↗</ExternalLink>
-        </div>
+function Sidebar({ route }) {
+  return <aside className="sidebar">
+    <div className="sidebarUpper">
+      <a className="sidebarIdentity" href="#overview" aria-label="Raphaela Oliveira, overview">
+        <img src={portraitUrl} alt="" width="48" height="48" />
+        <span>RAPHAELA<br />OLIVEIRA</span>
+      </a>
+      <nav className="sideNav" aria-label="Portfolio sections">
+        <Eyebrow>Explore</Eyebrow>
+        {sections.map(({ id, label, icon: Icon }) => <a key={id} href={`#${id}`} aria-current={route === id ? 'page' : undefined}><Icon size={21} aria-hidden="true" /><span>{label}</span></a>)}
       </nav>
-      <nav className="tabs" aria-label="Portfolio sections">
-        <label className="mobileMenu" htmlFor="section-menu">
-          <span className="mono">Explore</span>
-          <select id="section-menu" value={activeTab} onChange={event => onNavigate(event.target.value)}>
-            {TAB_OPTIONS.map(tab => <option key={tab.id} value={tab.id}>{tab.label}</option>)}
-          </select>
-        </label>
-        {TAB_OPTIONS.map(tab => <a key={tab.id} href={`#${tab.id}`} aria-current={activeTab === tab.id ? 'page' : undefined} className={activeTab === tab.id ? 'tab active' : 'tab'}>{tab.label}</a>)}
-      </nav>
-    </>
-  )
+    </div>
+    <div className="sidebarContact"><Eyebrow>Let’s connect</Eyebrow><LinkedIn>LinkedIn <ArrowUpRight size={16} aria-hidden="true" /></LinkedIn><a href={resumeUrl} download="Raphaela-Oliveira-Resume.pdf"><Download size={15} aria-hidden="true" /> Résumé</a></div>
+  </aside>
 }
-
-function Overview(props) {
-  return (
-    <section className="overviewPanel" aria-label="Overview">
-      <RoleFit {...props} />
-      <div className="overviewDetails">
-        <section className="careerSummary"><header className="denseHeading"><h2>Experience</h2><a href="#experience">Full timeline ↗</a></header>{EXPERIENCE_ITEMS.slice(0, 2).map(item => <article className="careerRow" key={item.company}><span className="companyMark">{item.company === 'Blue Origin' ? 'BO' : 'I'}</span><div><h3>{item.company}</h3><p>{item.role}</p><small>{item.period}</small></div><ArrowUpRight size={16} /></article>)}<div className="educationLine"><span className="mono">EDUCATION</span><p>B.S. Computer Science</p><small>São Judas Tadeu · 2019–2022</small></div></section>
-        <section className="toolkitSummary"><header className="denseHeading"><h2>Engineering toolkit</h2><a href="#skills" aria-label="Explore toolkit">↗</a></header>{SKILL_GROUPS.map(group => <div className="toolkitRow" key={group.title}><h3>{group.title}</h3><p>{group.items.join(' · ')}</p></div>)}</section>
-      </div>
-      <a className="recognitionStrip" href="#more"><span className="awardGlyph">↗</span><div><span className="mono">RECOGNITION</span><p>GenAI Hackathon Award <span>at Blue Origin</span></p></div><span>Explore awards & credentials ↗</span></a>
+function PageHeader({ route }) {
+  const index = sections.findIndex(section => section.id === route)
+  const title = index >= 0 ? sections[index].label : route === 'role-fit' ? 'Ask the guide' : route === 'skills' ? 'Toolkit' : 'Engineering challenge'
+  return <header className="pageHeader"><a href="#overview" className="wordmark"><Orbit size={27} aria-hidden="true" /><span>RAPHAELA OLIVEIRA</span></a><Eyebrow>{index >= 0 ? `0${index + 1} / ` : ''}{title}</Eyebrow></header>
+}
+const deliveryStages = [
+  { icon: Server, title: 'Infrastructure', tools: 'Terraform · AWS' },
+  { icon: GitBranch, title: 'CI/CD', tools: 'Build · Test · Deploy' },
+  { icon: CodeXml, title: 'Backend', tools: 'Java · Kotlin' },
+  { icon: PanelsTopLeft, title: 'Interface', tools: 'React' },
+  { icon: Rocket, title: 'Production', tools: 'Deploy · Monitor' },
+]
+function DeliveryFlow() {
+  return <section className="deliveryFlow" aria-label="End-to-end software delivery"><ol>{deliveryStages.map(({ icon: Icon, title, tools }, index) => <li key={title}><div className="deliveryStage"><Icon size={38} aria-hidden="true" /><h2>{title}</h2><span>{tools}</span></div>{index < deliveryStages.length - 1 && <ArrowRight className="deliveryArrow" size={22} aria-hidden="true" />}</li>)}</ol></section>
+}
+function Home() {
+  return <>
+    <section className="hero" aria-labelledby="home-title">
+      <img className="heroPortrait" src={portraitUrl} alt="Raphaela Oliveira during a trip, wearing a cap and hoodie" fetchPriority="high" />
+      <div className="heroShade" aria-hidden="true" />
+      <div className="heroCopy"><Eyebrow>Software engineer / curious by nature</Eyebrow><h1 id="home-title">Hi, I’m Raphaela.<br />Engineer. Explorer.</h1><p>Software engineer at Blue Origin.<br />Gamer, manga reader, and curious traveler.</p><a className="button primary" href="#work">Explore my work <ArrowDownRight size={20} aria-hidden="true" /></a></div>
+      <div className="heroMeta"><Eyebrow>5+ years in software / Melbourne, FL</Eyebrow><Eyebrow>Banking → Aerospace</Eyebrow></div>
     </section>
-  )
+    <DeliveryFlow />
+  </>
 }
-
+function CaseDetails({ note, ask, open }) {
+  const [stage, setStage] = useState(0)
+  const [node, setNode] = useState(0)
+  const current = note.stages[stage]
+  return <details className="caseDetails" open={open || undefined}>
+    <summary>Explore the work <ArrowDownRight size={16} aria-hidden="true" /></summary>
+    <div className="caseBody"><div className="tags">{note.tools.map(tool => <span key={tool}>{tool}</span>)}</div>
+      <div className="stageSelector" role="tablist" aria-label={`${note.category} walkthrough`}>{note.stages.map((item, index) => <button key={item.label} id={`${note.id}-stage-${index}`} role="tab" aria-selected={stage === index} aria-controls={`${note.id}-panel`} tabIndex={stage === index ? 0 : -1} onClick={() => setStage(index)} onKeyDown={event => {
+        if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return
+        event.preventDefault()
+        const next = event.key === 'Home' ? 0 : event.key === 'End' ? 2 : (index + (event.key === 'ArrowRight' ? 1 : 2)) % 3
+        setStage(next)
+        document.getElementById(`${note.id}-stage-${next}`)?.focus()
+      }}>{item.label}</button>)}</div>
+      <div className="stagePanel" id={`${note.id}-panel`} role="tabpanel" aria-labelledby={`${note.id}-stage-${stage}`}><h4>{current.title}</h4><p>{current.text}</p><p className="caseNote">{current.note}</p></div>
+      <div className="systemSketch"><Eyebrow>Engineering walkthrough / simplified example</Eyebrow><div className="flowNodes">{note.flow.map((item, index) => <button key={item.label} aria-pressed={node === index} onClick={() => setNode(index)}>{item.label}</button>)}</div><p aria-live="polite">{note.flow[node].detail}</p></div>
+      <button className="plainButton" onClick={() => ask(note.question)}>Discuss this with the guide <ArrowUpRight size={15} aria-hidden="true" /></button>
+    </div>
+  </details>
+}
+function Work({ ask, selectedCase }) {
+  const note = id => workNotes.find(item => item.id === id)
+  return <section className="workPage sectionPad" aria-labelledby="work-title">
+    <div className="sectionHeading"><h1 id="work-title">Engineering in practice.</h1><Eyebrow>Selected experience / 01—03</Eyebrow></div>
+    <div className="workGrid">
+      <article className="workCard procurement"><div className="caseMeta"><Eyebrow>01 / Blue Origin</Eyebrow><Eyebrow>Procurement automation</Eyebrow></div><div className="workVisual"><strong className="metric">~3 days → hours</strong><Eyebrow>Overall processing time</Eyebrow></div><h2>Spreadsheets → shared portal.</h2><p>Supplier registration for 30+ commodity managers.</p><CaseDetails note={note('interfaces')} ask={ask} open={selectedCase === 'interfaces'} /></article>
+      <article className="workCard backend"><div className="caseMeta"><Eyebrow>02 / Itaú Unibanco</Eyebrow><Eyebrow>Backend engineering</Eyebrow></div><div className="workVisual languageVisual"><CodeXml size={70} aria-hidden="true" /><strong>Java + Kotlin</strong></div><h2>APIs people rely on.</h2><p>Insurance quotes. Financing. Secure access.</p><CaseDetails note={note('apis')} ask={ask} open={selectedCase === 'apis'} /></article>
+    </div>
+    <article className="deliveryCard"><div className="deliveryCardCopy"><Eyebrow>03 / Blue Origin / cloud & delivery</Eyebrow><h2>Build once. Deploy repeatably.</h2><p>Terraform + AWS ECS/Fargate + CI/CD.<br />Adopted and extended by 3 engineering teams.</p><CaseDetails note={note('delivery')} ask={ask} open={selectedCase === 'delivery'} /></div><div className="deploymentMetric"><strong className="metric">~5 min</strong><Eyebrow>Dev deployments</Eyebrow></div></article>
+    <div className="workFootnote"><Eyebrow>Selected work / banking → aerospace</Eyebrow><div><a href="#skills">Explore my toolkit <ArrowUpRight size={14} /></a><a href="#challenge">Think through a challenge <ArrowUpRight size={14} /></a></div></div>
+  </section>
+}
+const career = [
+  { year: '2020', icon: Sprout, date: 'Mar 2020 — Sep 2021', title: 'Software Engineer Intern', company: 'Itaú Unibanco · Brazil' },
+  { year: '2021', icon: CodeXml, date: 'Sep 2021 — Sep 2024', title: 'Junior Software Engineer', company: 'Itaú Unibanco · Brazil' },
+  { year: '2024', icon: Layers, date: 'Oct 2024 — Feb 2025', title: 'Mid-Level Software Engineer', company: 'Itaú Unibanco · Brazil' },
+  { year: '2025', icon: Rocket, date: 'Aug 2025 — Present', title: 'Software Engineer I', company: 'Blue Origin · Florida', current: true },
+]
 function CareerTimeline() {
-  return <div className="timelineCard"><div className="timelineHeader"><div><h3>Career progression</h3><p>From internship to full-stack systems</p></div><span className="mono">2020 — Now</span></div><div className="timelineLegend"><span><i className="legendSwatch purple" /> Career growth</span><span><i className="legendSwatch yellow" /> Company transition</span></div><div className="careerLineChart"><svg viewBox="0 0 900 125" role="img" aria-label="Career progression line chart"><path d="M 15 112 C 110 100 190 92 280 72 S 405 48 485 30 S 680 16 850 8" />{CAREER_MILESTONES.map((milestone, index) => <circle key={milestone.year} cx={[15, 280, 485, 850][index]} cy={[112, 72, 30, 8][index]} r="6" />)}{CAREER_MILESTONES.map((milestone, index) => <text key={`${milestone.year}-label`} x={[15, 280, 485, 760][index]} y="128">{milestone.year} · {milestone.label}</text>)}</svg></div><div className="timelineAxis">{CAREER_MILESTONES.map((item) => <div className="timelineMilestone" key={`${item.year}-${item.company}`}><span className="mono">{item.year}</span><div className={`timelineBar ${item.tone}`} /><strong>{item.company}</strong><small>{item.detail}</small></div>)}</div></div>
+  return <section className="career sectionPad" aria-labelledby="career-title"><Eyebrow>Experience / the path so far</Eyebrow><h2 id="career-title">From banking to aerospace.</h2><ol className="careerTimeline">{career.map(({ year, icon: Icon, date, title, company, current }, index) => <li className={current ? 'currentRole' : ''} key={year}><div className="milestoneYear"><Icon size={28} aria-hidden="true" /><strong>{year}</strong></div><span className="careerDate">{date}</span><h3>{title}</h3><p>{company}</p>{index < career.length - 1 && <ArrowRight className="careerArrow" size={24} aria-hidden="true" />}{current && <span className="srOnly">Current position</span>}</li>)}</ol><div className="education"><GraduationCap size={32} aria-hidden="true" /><span className="educationYear">2022</span><h3>B.S. Computer Science</h3><p>Universidade São Judas Tadeu · Brazil</p></div></section>
 }
-
-function ExperiencePanel() {
-  return <Section id="experience" index="02" title="Experience"><CareerTimeline /><ol className="expList">{EXPERIENCE_ITEMS.map((item) => <li key={item.company}><span className="mono period">{item.period}</span><div className="expRole"><h3>{item.company}</h3><span>{item.role}</span></div><p>{item.text}</p></li>)}</ol></Section>
+function About() {
+  return <>
+    <section className="aboutIntro sectionPad" aria-labelledby="about-title"><figure><img src={portraitUrl} alt="Raphaela Oliveira, the person behind the code" width="420" height="430" loading="lazy" /><figcaption>Raphaela Oliveira / the person behind the code</figcaption></figure><div><Eyebrow>Career / banking to aerospace</Eyebrow><h1 id="about-title">One engineer.<br />End-to-end delivery.</h1><p>Software engineer at Blue Origin.<br />5+ years across banking and aerospace.<br />From the first commit to production.</p><LinkedIn className="textLink">Connect on LinkedIn <ArrowUpRight size={16} aria-hidden="true" /></LinkedIn></div></section>
+    <section className="interests" aria-label="Interests beyond engineering"><Eyebrow>Beyond code</Eyebrow>{[[Gamepad2, 'FPS games', 'One more round.'], [BookOpen, 'Manga', 'One more chapter.'], [Compass, 'Travel', 'One more place to explore.']].map(([Icon, title, caption]) => <div className="interest" key={title}><Icon size={26} aria-hidden="true" /><div><h2>{title}</h2><p>{caption}</p></div></div>)}</section>
+    <CareerTimeline />
+  </>
 }
-
-function SkillsPanel() {
-  return <Section id="skills" index="03" title="Systems toolkit"><div className="skillGrid">{SKILL_GROUPS.map((group) => <div key={group.title}><h3>{group.title}</h3><ul>{group.items.map((item) => <li key={item}>{item}</li>)}</ul></div>)}</div></Section>
+function Recognition() {
+  return <section className="recognitionPage sectionPad" aria-labelledby="recognition-title"><Eyebrow>Recognition / work that made a difference</Eyebrow><h1 id="recognition-title">Recognized for the execution.</h1><div className="awardGrid"><article><Eyebrow>Blue Origin / February 2026</Eyebrow><Award size={64} className="awardIcon" aria-hidden="true" /><h2>Golden Rivet Award</h2><h3>Best Technical Execution</h3><p>Co-developed DRILL, a GenAI solution that extracts data from engineering drawings. Our team received the Golden Rivet Award for Best Technical Execution.</p><p>The team’s code was later reused in production by another engineering team — taking the work beyond the prototype.</p></article><article><Eyebrow>Itaú Unibanco / April 2024</Eyebrow><Medal size={64} className="awardIcon" aria-hidden="true" /><h2>Merit Bonus</h2><h3>Insurance & backend engineering</h3><p>Recognized for contributions to an auto insurance service, including backend and simulation workflows.</p><p>This work connected API development with a simpler insurance simulation experience.</p></article></div></section>
 }
-
-function RowList({ label, rows }) {
-  return <div className="rowList"><span className="mono label">{label}</span><ul>{rows.map((row) => <li key={row.title}><div><strong>{row.title}</strong><p>{row.text}</p></div><span className="mono">{row.meta}</span></li>)}</ul></div>
+const courses = [
+  { icon: Activity, title: 'Site Reliability Engineering', provider: 'Training / 2024', description: 'A focus on software reliability and operating services in production — complementing my work with monitoring, troubleshooting, and delivery.' },
+  { icon: ShieldCheck, title: 'Ethical Web Hacking', provider: '42 São Paulo / 2024', description: 'Training in ethical web hacking, adding a security perspective to how I think about web applications and APIs.' },
+  { icon: Cloud, title: 'Getting Started with Serverless', provider: 'AWS / 2023', description: 'An introduction to serverless computing, alongside my practical experience evaluating and using AWS Lambda workflows.' },
+  { icon: Layers, title: 'Cloud Foundations', provider: 'AWS Academy / 2021', description: 'Foundational cloud training that supports the broader AWS toolkit I use for infrastructure and application delivery.' },
+  { icon: Network, title: 'Introduction to IoT', provider: 'Cisco / 2021', description: 'An introduction to the Internet of Things, extending my learning beyond application code to connected systems.' },
+  { icon: BookOpen, title: 'Lifelong Learning', provider: 'Certiprof / 2020', description: 'Continued learning as an ongoing practice — building new skills as my work evolves from financial services to aerospace.' },
+]
+function Learning() {
+  return <section className="learningPage sectionPad" aria-labelledby="learning-title"><Eyebrow>Courses / continued learning</Eyebrow><h1 id="learning-title">Keep building. Keep learning.</h1><p className="sectionIntro">Continued learning across reliability, cloud, security, and connected systems.</p><div className="courseGrid">{courses.map(({ icon: Icon, title, provider, description }) => <article key={title}><div className="courseTitle"><Icon size={28} aria-hidden="true" /><h2>{title}</h2></div><Eyebrow>{provider}</Eyebrow><p>{description}</p></article>)}</div></section>
 }
-
-function MorePanel() {
-  return <><Section id="recognition" index="04" title="Flight record"><div className="twoCols"><RowList label="Awards" rows={AWARDS} /><RowList label="Certifications & training" rows={CERTIFICATIONS} /></div></Section><Section id="about" index="05" title="Beyond the mission"><div className="about"><p>I play FPS games, read manga and travel whenever I can. Strategy, good stories and new places keep me curious — and that curiosity is a big part of how I keep growing as an engineer.</p><ul>{INTERESTS.map(({ icon: Icon, label }) => <li key={label}><Icon size={18} /> {label}</li>)}</ul></div></Section></>
+function Challenge({ ask }) {
+  const [selected, setSelected] = useState(0)
+  const [choice, setChoice] = useState(null)
+  const challenge = challenges[selected]
+  return <section className="explorerPage sectionPad"><Eyebrow>Think it through with me</Eyebrow><h1>Where would you start?</h1><p className="sectionIntro">A short engineering thought experiment. Choose a first move and explore what it tells you.</p><div className="segmented">{challenges.map((item, index) => <button key={item.id} aria-pressed={selected === index} onClick={() => { setSelected(index); setChoice(null) }}>{index === 0 ? 'An API under pressure' : 'A workflow to simplify'}</button>)}</div><article className="challengeCard"><Eyebrow>Illustrative scenario</Eyebrow><h2>{challenge.title}</h2><p>{challenge.situation}</p><div className="challengeChoices">{challenge.options.map((option, index) => <button key={option.label} aria-pressed={choice === index} onClick={() => setChoice(index)}>{option.label}</button>)}</div>{choice !== null && <div className="challengeResponse" aria-live="polite"><p>{challenge.options[choice].response}</p><p>{challenge.connection}</p><button className="button primary" onClick={() => ask(challenge.prompt)}>Keep exploring with the guide</button></div>}</article></section>
 }
-
+function Toolkit({ openWork }) {
+  const [selected, setSelected] = useState(0)
+  const tool = toolkit[selected]
+  return <section className="explorerPage sectionPad"><Eyebrow>Tools, with context</Eyebrow><h1>What I reach for.</h1><p className="sectionIntro">Select a tool to see how it connects to my experience.</p><div className="toolkitExplorer"><div className="toolChoices">{toolkit.map((item, index) => <button key={item.name} aria-pressed={selected === index} onClick={() => setSelected(index)}><Eyebrow>{item.group}</Eyebrow>{item.name}</button>)}</div><article className="toolDetail"><CodeXml size={36} /><Eyebrow>{tool.group}</Eyebrow><h2>{tool.name}</h2><p>{tool.text}</p><button className="button primary" onClick={() => openWork(tool.caseId)}>Explore the connected work</button></article></div><p className="sectionIntro">Also in my toolkit: AWS · Databricks · Postman · Insomnia · Datadog · Automated tests</p></section>
+}
 function Footer() {
-  return <footer className="contact"><div className="contactLine"><p>Good systems start with a conversation.</p><ExternalLink className="email">Let’s connect <ArrowUpRight size={18} /></ExternalLink></div><div className="footerBottom"><span>© {CURRENT_YEAR} Raphaela Oliveira</span><div><ExternalLink>LinkedIn <ArrowUpRight size={13} /></ExternalLink><a href="#top">Back to top ↑</a></div></div></footer>
+  return <footer className="contactFooter"><Eyebrow>Let’s connect / software engineering</Eyebrow><LinkedIn className="contactHeadline"><span>Let’s build what’s next.</span><ArrowUpRight size={40} aria-hidden="true" /></LinkedIn><div className="footerMeta"><span>Raphaela Oliveira / Melbourne, FL</span><div><a href="#role-fit">Ask the guide <ArrowUpRight size={13} /></a><a href={resumeUrl} download="Raphaela-Oliveira-Resume.pdf">Résumé <Download size={13} /></a><LinkedIn>LinkedIn <ArrowUpRight size={13} /></LinkedIn></div></div></footer>
 }
-
-function App() {
-  const [activeTab, setActiveTab] = useState(readRoute)
-  const [priorities, setPriorities] = useState([])
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [darkMode, setDarkMode] = useState(() => window.localStorage.getItem(THEME_STORAGE_KEY) === 'dark')
-
+function Portfolio() {
+  const [route, setRoute] = useState(readRoute)
+  const [guideOpened, setGuideOpened] = useState(false)
+  const [guideQuestion, setGuideQuestion] = useState(null)
+  const [selectedCase, setSelectedCase] = useState(null)
   useEffect(() => {
-    document.body.classList.toggle('darkMode', darkMode)
-    window.localStorage.setItem(THEME_STORAGE_KEY, darkMode ? 'dark' : 'light')
-    return () => document.body.classList.remove('darkMode')
-  }, [darkMode])
-
-  useEffect(() => {
-    const syncRoute = () => setActiveTab(readRoute())
+    const syncRoute = () => setRoute(readRoute())
     window.addEventListener('hashchange', syncRoute)
     return () => window.removeEventListener('hashchange', syncRoute)
   }, [])
-
   useEffect(() => {
-    if (activeTab === DEFAULT_TAB) return
-    const frame = requestAnimationFrame(() => {
-      const panel = document.getElementById('content-panel')
-      panel?.focus({ preventScroll: true })
-      panel?.scrollIntoView({ behavior: 'instant', block: 'start' })
-    })
-    return () => cancelAnimationFrame(frame)
-  }, [activeTab])
-
-  function openSection(id) {
-    window.location.hash = id
-    setSidebarOpen(false)
+    if (route === 'role-fit') setGuideOpened(true)
+    const title = sections.find(section => section.id === route)?.label || (route === 'role-fit' ? 'Ask the guide' : route === 'skills' ? 'Toolkit' : 'Engineering challenge')
+    document.title = `${title} — Raphaela Oliveira | Software Engineer`
+    document.getElementById('content')?.focus({ preventScroll: true })
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [route])
+  function ask(text) {
+    setGuideQuestion({ id: crypto.randomUUID(), text })
+    window.location.hash = 'role-fit'
   }
-
-  function newConversation() {
-    setPriorities([])
-    openSection('overview')
+  function openWork(id) {
+    setSelectedCase(id)
+    window.location.hash = 'work'
   }
-
-  const isSection = activeTab !== DEFAULT_TAB
-  const pageClass = ['page', isSection && 'isSection', darkMode && 'dark'].filter(Boolean).join(' ')
-  const ActivePanel = PANEL_COMPONENTS[activeTab] ?? Overview
-
-  return (
-    <div className={`${pageClass} chatShell`}>
-      {sidebarOpen && <button className="sidebarScrim" aria-label="Close navigation" onClick={() => setSidebarOpen(false)} />}
-      <aside className={`chatSidebar ${sidebarOpen ? 'isOpen' : ''}`}>
-        <div className="sidebarBrand"><a href="#overview" onClick={() => setSidebarOpen(false)}><span className="monogram">ro.</span> Portfolio</a><button className="closeSidebar" onClick={() => setSidebarOpen(false)} aria-label="Close navigation"><X size={18} /></button></div>
-        <button className="newConversation" onClick={newConversation}><Plus size={17} /> New conversation</button>
-
-        <nav className="chatNavigation" aria-label="Portfolio sections">{[{id:'overview', label:'Role fit', icon:MessageCircle},{id:'experience',label:'Experience',icon:BriefcaseBusiness},{id:'skills',label:'Engineering toolkit',icon:Wrench},{id:'more',label:'About & recognition',icon:Award}].map(({id,label,icon:Icon}) => <a key={id} href={`#${id}`} className={(activeTab === id || (id === 'overview' && activeTab === 'role-fit')) ? 'selected' : ''} aria-current={(activeTab === id || (id === 'overview' && activeTab === 'role-fit')) ? 'page' : undefined} onClick={() => setSidebarOpen(false)}><Icon size={17} />{label}</a>)}</nav>
-
-        <div className="sidebarBottom">{resumeUrl && <a className="resumeLink" href={resumeUrl} download="Raphaela-Oliveira-Resume.pdf"><Download size={16} /> Download résumé <ArrowUpRight size={13} /></a>}<a className="sidebarProfile" href="https://www.linkedin.com/in/raphaelaoliveirajava" target="_blank" rel="noreferrer"><img src={HERO.image} alt="Raphaela Oliveira" /><div><strong>Raphaela Oliveira</strong><span>Software Engineer · Florida</span></div><ArrowUpRight size={14} /></a></div>
-      </aside>
-      <main className="chatMain">
-        <header className="chatTopbar"><div><button className="openSidebar" aria-label="Open navigation" aria-expanded={sidebarOpen} onClick={() => setSidebarOpen(true)}><Menu size={20} /></button><span>Portfolio <span className="topbarSlash">/</span> <strong>{activeTab === 'overview' || activeTab === 'role-fit' ? 'Role fit' : TAB_OPTIONS.find(tab => tab.id === activeTab)?.label}</strong></span></div><div><button className="themeToggle" onClick={() => setDarkMode(value => !value)} aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>{darkMode ? <Sun size={16} /> : <Moon size={16} />}</button><ExternalLink className="chatConnect">Let’s connect <ArrowUpRight size={14} /></ExternalLink></div></header>
-        <div id="content-panel" tabIndex={-1}><ActivePanel priorities={priorities} setPriorities={setPriorities} resumeUrl={resumeUrl} /></div>
-      </main>
-    </div>
-  )
+  const pages = { overview: <Home />, work: <Work ask={ask} selectedCase={selectedCase} />, about: <About />, recognition: <Recognition />, learning: <Learning />, challenge: <Challenge ask={ask} />, skills: <Toolkit openWork={openWork} /> }
+  return <div className="portfolio"><a className="skipLink" href="#content" onClick={event => { event.preventDefault(); document.getElementById('content')?.focus() }}>Skip to content</a><Sidebar route={route} /><div className="pageShell" data-page={route}><PageHeader route={route} /><main id="content" tabIndex={-1}>{pages[route]}{(guideOpened || route === 'role-fit') && <div className="guideWrap" hidden={route !== 'role-fit'}><Suspense fallback={<p role="status">Opening the guide…</p>}><RoleFit question={guideQuestion} /></Suspense></div>}</main><Footer /></div></div>
 }
 
-createRoot(document.getElementById('root')).render(<App />)
+createRoot(document.getElementById('root')).render(<Portfolio />)
